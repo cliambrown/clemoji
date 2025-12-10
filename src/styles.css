@@ -11,46 +11,172 @@
 
 .emoji-btn {
     @apply relative flex items-center justify-center p-1 rounded-md cursor-pointer focus:outline-none min-w-10 min-h-10;
+    scroll-margin-top: 4rem;
+    scroll-margin-bottom: 12rem;
 }
 
-body.emoji_size-small .emoji-btn { @apply text-lg; }
-body:not(.emoji_size-small):not(.emoji_size-large) .emoji-btn { @apply text-3xl; }
-body.emoji_size-large .emoji-btn { @apply text-6xl; }
+body.emoji_size-small .emoji-btn:not(.selected-emoji-btn) { @apply text-lg; }
+body:not(.emoji_size-small):not(.emoji_size-large) .emoji-btn:not(.selected-emoji-btn) { @apply text-3xl; }
+body.emoji_size-large .emoji-btn:not(.selected-emoji-btn) { @apply text-6xl; }
 
 .emoji-btn.selected {
     @apply ring-2 ring-blue-500;
 }
 
+.emoji-btn[data-pinned="true"]::before,
+.emoji-btn[data-used="true"]::before {
+    @apply absolute top-1 right-0 flex items-end justify-end size-4 -z-10;
+}
+.emoji-btn[data-pinned="true"]::before { content: url('./assets/star.svg'); }
+.emoji-btn[data-used="true"]::before { content: url('./assets/clock.svg'); }
+
+.selected-emoji-btn::after {
+    @apply absolute top-1 right-0 flex items-end justify-end size-4 z-10 opacity-0 transition-opacity duration-100;
+    content: url('./assets/circle-x.svg');
+}
+.selected-emoji-btn:hover::after {
+    @apply opacity-100;
+}
+
+#filtered-emojis .emoji-btn[data-st1]::before,
+#filtered-emojis .emoji-btn[data-st3]::before,
+#filtered-emojis .emoji-btn[data-hair]::before,
+#filtered-emojis .emoji-btn[data-dir]::before {
+    @apply absolute -bottom-1 -right-0.5 flex items-end justify-end size-4 -z-10;
+    content: url('./assets/plus.svg');
+}
+
 /* Hide emojis */
+/* #filtered-emojis .emoji-btn[data-filtered="true"], */
+.hide-unsupported #filtered-emojis .emoji-btn[data-unsupported="true"],
 
-.emoji-btn[data-filtered="true"],
+/* Skin Tone 1 */
+.st1-false #filtered-emojis .emoji-btn[data-st1="lst"],
+.st1-false #filtered-emojis .emoji-btn[data-st1="mlst"],
+.st1-false #filtered-emojis .emoji-btn[data-st1="mst"],
+.st1-false #filtered-emojis .emoji-btn[data-st1="mdst"],
+.st1-false #filtered-emojis .emoji-btn[data-st1="dst"],
 
-.hide-unsupported .emoji-btn[data-unsupported="true"],
+.st1-lst #filtered-emojis .emoji-btn[data-st1="false"],
+.st1-lst #filtered-emojis .emoji-btn[data-st1="mlst"],
+.st1-lst #filtered-emojis .emoji-btn[data-st1="mst"],
+.st1-lst #filtered-emojis .emoji-btn[data-st1="mdst"],
+.st1-lst #filtered-emojis .emoji-btn[data-st1="dst"],
 
-.st1-false .emoji-btn:not([data-st1="false"]):not([data-st1="ignore"]),
-.st1-lst .emoji-btn:not([data-st1="lst"]):not([data-st1="ignore"]),
-.st1-mlst .emoji-btn:not([data-st1="mlst"]):not([data-st1="ignore"]),
-.st1-mst .emoji-btn:not([data-st1="mst"]):not([data-st1="ignore"]),
-.st1-mdst .emoji-btn:not([data-st1="mdst"]):not([data-st1="ignore"]),
-.st1-dst .emoji-btn:not([data-st1="dst"]):not([data-st1="ignore"]),
+.st1-mlst #filtered-emojis .emoji-btn[data-st1="false"],
+.st1-mlst #filtered-emojis .emoji-btn[data-st1="lst"],
+.st1-mlst #filtered-emojis .emoji-btn[data-st1="mst"],
+.st1-mlst #filtered-emojis .emoji-btn[data-st1="mdst"],
+.st1-mlst #filtered-emojis .emoji-btn[data-st1="dst"],
 
-.st2-false .emoji-btn:not([data-st2="false"]):not([data-st2="ignore"]),
-.st2-lst .emoji-btn:not([data-st2="lst"]):not([data-st2="ignore"]),
-.st2-mlst .emoji-btn:not([data-st2="mlst"]):not([data-st2="ignore"]),
-.st2-mst .emoji-btn:not([data-st2="mst"]):not([data-st2="ignore"]),
-.st2-mdst .emoji-btn:not([data-st2="mdst"]):not([data-st2="ignore"]),
-.st2-dst .emoji-btn:not([data-st2="dst"]):not([data-st2="ignore"]),
+.st1-mst #filtered-emojis .emoji-btn[data-st1="false"],
+.st1-mst #filtered-emojis .emoji-btn[data-st1="lst"],
+.st1-mst #filtered-emojis .emoji-btn[data-st1="mlst"],
+.st1-mst #filtered-emojis .emoji-btn[data-st1="mdst"],
+.st1-mst #filtered-emojis .emoji-btn[data-st1="dst"],
 
-.hair-false .emoji-btn:not([data-hair="false"]):not([data-hair="ignore"]),
-.hair-blond .emoji-btn:not([data-hair="blond"]):not([data-hair="ignore"]),
-.hair-beard .emoji-btn:not([data-hair="beard"]):not([data-hair="ignore"]),
-.hair-red .emoji-btn:not([data-hair="red"]):not([data-hair="ignore"]),
-.hair-curly .emoji-btn:not([data-hair="curly"]):not([data-hair="ignore"]),
-.hair-white .emoji-btn:not([data-hair="white"]):not([data-hair="ignore"]),
-.hair-bald .emoji-btn:not([data-hair="bald"]):not([data-hair="ignore"]),
+.st1-mdst #filtered-emojis .emoji-btn[data-st1="false"],
+.st1-mdst #filtered-emojis .emoji-btn[data-st1="lst"],
+.st1-mdst #filtered-emojis .emoji-btn[data-st1="mlst"],
+.st1-mdst #filtered-emojis .emoji-btn[data-st1="mst"],
+.st1-mdst #filtered-emojis .emoji-btn[data-st1="dst"],
 
-.dir-false .emoji-btn:not([data-dir="false"]):not([data-dir="ignore"]),
-.dir-right .emoji-btn:not([data-dir="right"]):not([data-dir="ignore"])
+.st1-dst #filtered-emojis .emoji-btn[data-st1="false"],
+.st1-dst #filtered-emojis .emoji-btn[data-st1="lst"],
+.st1-dst #filtered-emojis .emoji-btn[data-st1="mlst"],
+.st1-dst #filtered-emojis .emoji-btn[data-st1="mst"],
+.st1-dst #filtered-emojis .emoji-btn[data-st1="mdst"],
+
+/* Skin Tone 2 */
+.st2-false #filtered-emojis .emoji-btn[data-st2="lst"],
+.st2-false #filtered-emojis .emoji-btn[data-st2="mlst"],
+.st2-false #filtered-emojis .emoji-btn[data-st2="mst"],
+.st2-false #filtered-emojis .emoji-btn[data-st2="mdst"],
+.st2-false #filtered-emojis .emoji-btn[data-st2="dst"],
+
+.st2-lst #filtered-emojis .emoji-btn[data-st2="false"],
+.st2-lst #filtered-emojis .emoji-btn[data-st2="mlst"],
+.st2-lst #filtered-emojis .emoji-btn[data-st2="mst"],
+.st2-lst #filtered-emojis .emoji-btn[data-st2="mdst"],
+.st2-lst #filtered-emojis .emoji-btn[data-st2="dst"],
+
+.st2-mlst #filtered-emojis .emoji-btn[data-st2="false"],
+.st2-mlst #filtered-emojis .emoji-btn[data-st2="lst"],
+.st2-mlst #filtered-emojis .emoji-btn[data-st2="mst"],
+.st2-mlst #filtered-emojis .emoji-btn[data-st2="mdst"],
+.st2-mlst #filtered-emojis .emoji-btn[data-st2="dst"],
+
+.st2-mst #filtered-emojis .emoji-btn[data-st2="false"],
+.st2-mst #filtered-emojis .emoji-btn[data-st2="lst"],
+.st2-mst #filtered-emojis .emoji-btn[data-st2="mlst"],
+.st2-mst #filtered-emojis .emoji-btn[data-st2="mdst"],
+.st2-mst #filtered-emojis .emoji-btn[data-st2="dst"],
+
+.st2-mdst #filtered-emojis .emoji-btn[data-st2="false"],
+.st2-mdst #filtered-emojis .emoji-btn[data-st2="lst"],
+.st2-mdst #filtered-emojis .emoji-btn[data-st2="mlst"],
+.st2-mdst #filtered-emojis .emoji-btn[data-st2="mst"],
+.st2-mdst #filtered-emojis .emoji-btn[data-st2="dst"],
+
+.st2-dst #filtered-emojis .emoji-btn[data-st2="false"],
+.st2-dst #filtered-emojis .emoji-btn[data-st2="lst"],
+.st2-dst #filtered-emojis .emoji-btn[data-st2="mlst"],
+.st2-dst #filtered-emojis .emoji-btn[data-st2="mst"],
+.st2-dst #filtered-emojis .emoji-btn[data-st2="mdst"],
+
+/* Hair */
+.hair-false #filtered-emojis .emoji-btn[data-hair="blond"],
+.hair-false #filtered-emojis .emoji-btn[data-hair="beard"],
+.hair-false #filtered-emojis .emoji-btn[data-hair="red"],
+.hair-false #filtered-emojis .emoji-btn[data-hair="curly"],
+.hair-false #filtered-emojis .emoji-btn[data-hair="white"],
+.hair-false #filtered-emojis .emoji-btn[data-hair="bald"],
+
+.hair-blond #filtered-emojis .emoji-btn[data-hair="false"],
+.hair-blond #filtered-emojis .emoji-btn[data-hair="beard"],
+.hair-blond #filtered-emojis .emoji-btn[data-hair="red"],
+.hair-blond #filtered-emojis .emoji-btn[data-hair="curly"],
+.hair-blond #filtered-emojis .emoji-btn[data-hair="white"],
+.hair-blond #filtered-emojis .emoji-btn[data-hair="bald"],
+
+.hair-beard #filtered-emojis .emoji-btn[data-hair="false"],
+.hair-beard #filtered-emojis .emoji-btn[data-hair="blond"],
+.hair-beard #filtered-emojis .emoji-btn[data-hair="red"],
+.hair-beard #filtered-emojis .emoji-btn[data-hair="curly"],
+.hair-beard #filtered-emojis .emoji-btn[data-hair="white"],
+.hair-beard #filtered-emojis .emoji-btn[data-hair="bald"],
+
+.hair-red #filtered-emojis .emoji-btn[data-hair="false"],
+.hair-red #filtered-emojis .emoji-btn[data-hair="blond"],
+.hair-red #filtered-emojis .emoji-btn[data-hair="beard"],
+.hair-red #filtered-emojis .emoji-btn[data-hair="curly"],
+.hair-red #filtered-emojis .emoji-btn[data-hair="white"],
+.hair-red #filtered-emojis .emoji-btn[data-hair="bald"],
+
+.hair-curly #filtered-emojis .emoji-btn[data-hair="false"],
+.hair-curly #filtered-emojis .emoji-btn[data-hair="blond"],
+.hair-curly #filtered-emojis .emoji-btn[data-hair="beard"],
+.hair-curly #filtered-emojis .emoji-btn[data-hair="red"],
+.hair-curly #filtered-emojis .emoji-btn[data-hair="white"],
+.hair-curly #filtered-emojis .emoji-btn[data-hair="bald"],
+
+.hair-white #filtered-emojis .emoji-btn[data-hair="false"],
+.hair-white #filtered-emojis .emoji-btn[data-hair="blond"],
+.hair-white #filtered-emojis .emoji-btn[data-hair="beard"],
+.hair-white #filtered-emojis .emoji-btn[data-hair="red"],
+.hair-white #filtered-emojis .emoji-btn[data-hair="curly"],
+.hair-white #filtered-emojis .emoji-btn[data-hair="bald"],
+
+.hair-bald #filtered-emojis .emoji-btn[data-hair="false"],
+.hair-bald #filtered-emojis .emoji-btn[data-hair="blond"],
+.hair-bald #filtered-emojis .emoji-btn[data-hair="beard"],
+.hair-bald #filtered-emojis .emoji-btn[data-hair="red"],
+.hair-bald #filtered-emojis .emoji-btn[data-hair="curly"],
+.hair-bald #filtered-emojis .emoji-btn[data-hair="white"],
+
+/* Direction */
+.dir-false #filtered-emojis .emoji-btn[data-dir="right"],
+.dir-right #filtered-emojis .emoji-btn[data-dir="false"]
 {
     @apply hidden;
 }

@@ -8,16 +8,15 @@ use tauri_plugin_sql::{Migration, MigrationKind};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    
     let migrations = vec![
         Migration {
             version: 1,
             description: "create_initial_tables",
             sql: "
-                CREATE TABLE pinned_emojis (id INTEGER PRIMARY KEY, emoji_name TEXT);
-                CREATE TABLE used_emojis (id INTEGER PRIMARY KEY, emoji_name TEXT);
+                CREATE TABLE pinned_emojis (emoji_name TEXT);
+                CREATE TABLE used_emojis (emoji_name TEXT);
                 
-                CREATE TABLE settings (id INTEGER PRIMARY KEY, name TEXT, value TEXT);
+                CREATE TABLE settings (name TEXT, value TEXT);
                 INSERT INTO settings (name, value) VALUES ('theme', 'system');
                 INSERT INTO settings (name, value) VALUES ('emoji_size', 'medium');
                 INSERT INTO settings (name, value) VALUES ('max_used_emojis', '10');
@@ -29,17 +28,19 @@ pub fn run() {
                 INSERT INTO settings (name, value) VALUES ('hair', 'false');
                 INSERT INTO settings (name, value) VALUES ('dir', 'false');
                 
-                CREATE TABLE extra_searchable_texts (id INTEGER PRIMARY KEY, emoji_name TEXT, searchable_text TEXT);
+                CREATE TABLE extra_searchable_texts (emoji_name TEXT, searchable_text TEXT);
                 INSERT INTO extra_searchable_texts (emoji_name, searchable_text) VALUES ('waving hand', 'wave');
             ",
             kind: MigrationKind::Up,
         }
     ];
-    
+
     tauri::Builder::default()
-        .plugin(tauri_plugin_sql::Builder::default()
-            .add_migrations("sqlite:clemoji.db", migrations)
-            .build()
+        .plugin(tauri_plugin_process::init())
+        .plugin(
+            tauri_plugin_sql::Builder::default()
+                .add_migrations("sqlite:clemoji.db", migrations)
+                .build(),
         )
         .plugin(tauri_plugin_window_state::Builder::new().build())
         .plugin(tauri_plugin_opener::init())
