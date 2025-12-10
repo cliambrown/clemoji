@@ -1,0 +1,56 @@
+@import "tailwindcss" source("../");
+@source not "../.vscode";
+@source not "../node_modules";
+@source not "../src";
+@source not "../src-tauri";
+@source inline("hidden");
+
+@plugin "@tailwindcss/forms";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+.emoji-btn {
+    @apply relative flex items-center justify-center p-1 rounded-md cursor-pointer focus:outline-none min-w-10 min-h-10;
+}
+
+body.emoji_size-small .emoji-btn { @apply text-lg; }
+body:not(.emoji_size-small):not(.emoji_size-large) .emoji-btn { @apply text-3xl; }
+body.emoji_size-large .emoji-btn { @apply text-6xl; }
+
+.emoji-btn.selected {
+    @apply ring-2 ring-blue-500;
+}
+
+/* Hide emojis */
+
+.emoji-btn[data-filtered="true"],
+
+.hide-unsupported .emoji-btn[data-unsupported="true"],
+
+.st1-false .emoji-btn:not([data-st1="false"]):not([data-st1="ignore"]),
+.st1-lst .emoji-btn:not([data-st1="lst"]):not([data-st1="ignore"]),
+.st1-mlst .emoji-btn:not([data-st1="mlst"]):not([data-st1="ignore"]),
+.st1-mst .emoji-btn:not([data-st1="mst"]):not([data-st1="ignore"]),
+.st1-mdst .emoji-btn:not([data-st1="mdst"]):not([data-st1="ignore"]),
+.st1-dst .emoji-btn:not([data-st1="dst"]):not([data-st1="ignore"]),
+
+.st2-false .emoji-btn:not([data-st2="false"]):not([data-st2="ignore"]),
+.st2-lst .emoji-btn:not([data-st2="lst"]):not([data-st2="ignore"]),
+.st2-mlst .emoji-btn:not([data-st2="mlst"]):not([data-st2="ignore"]),
+.st2-mst .emoji-btn:not([data-st2="mst"]):not([data-st2="ignore"]),
+.st2-mdst .emoji-btn:not([data-st2="mdst"]):not([data-st2="ignore"]),
+.st2-dst .emoji-btn:not([data-st2="dst"]):not([data-st2="ignore"]),
+
+.hair-false .emoji-btn:not([data-hair="false"]):not([data-hair="ignore"]),
+.hair-blond .emoji-btn:not([data-hair="blond"]):not([data-hair="ignore"]),
+.hair-beard .emoji-btn:not([data-hair="beard"]):not([data-hair="ignore"]),
+.hair-red .emoji-btn:not([data-hair="red"]):not([data-hair="ignore"]),
+.hair-curly .emoji-btn:not([data-hair="curly"]):not([data-hair="ignore"]),
+.hair-white .emoji-btn:not([data-hair="white"]):not([data-hair="ignore"]),
+.hair-bald .emoji-btn:not([data-hair="bald"]):not([data-hair="ignore"]),
+
+.dir-false .emoji-btn:not([data-dir="false"]):not([data-dir="ignore"]),
+.dir-right .emoji-btn:not([data-dir="right"]):not([data-dir="ignore"])
+{
+    @apply hidden;
+}
