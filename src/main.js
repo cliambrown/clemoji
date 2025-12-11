@@ -6,6 +6,7 @@ let emojiBtns = [];
 let highlightedBtn = null;
 let selectedEmojis = [];
 
+const filterInput = document.getElementById('filter-input');
 const filterStyleSheet = document.getElementById('filter_style').sheet;
 const filteredEmojisEl = document.getElementById('filtered-emojis');
 const selectedEmojisEl = document.getElementById('selected-emojis');
@@ -52,7 +53,7 @@ async function loadStore() {
   }
   usedEmojis.sort((a, b) => a.hotness - b.hotness);
   for (const usedEmoji of usedEmojis) {
-    const sourceBtn = document.querySelector('.emoji-btn[title="'+CSS.escape(usedEmoji.name)+'"');
+    const sourceBtn = document.querySelector('.emoji-btn[title="'+CSS.escape(usedEmoji.name)+'"]');
     if (sourceBtn) {
       const btn = sourceBtn.cloneNode();
       btn.dataset.used = 'true';
@@ -115,6 +116,7 @@ function emojiNav(forward = true) {
       return true;
     }
   }
+  highlightFirstEmojiBtn();
 }
 
 function filterEmojis(e) {
@@ -126,6 +128,12 @@ function filterEmojis(e) {
     filterStyleSheet.insertRule('#filtered-emojis .emoji-btn:not([data-searchable-text*="'+filter+'"]){display:none;}');
   }
   highlightFirstEmojiBtn();
+}
+
+function clearFilterInput() {
+  filterInput.value = '';
+  filterInput.focus();
+  filterEmojis({ target: filterInput });
 }
 
 function handleEmojiBtnClick(e, btn) {
@@ -143,7 +151,22 @@ function handleEmojiBtnClick(e, btn) {
   } else if (!e.shiftKey && e.ctrlKey && !e.altKey) {
     togglePinnedEmoji(btn);
   } else if (e.shiftKey && e.ctrlKey && !e.altKey) {
-    // removeEmojiFromHistory(emojiData, highlightedEmojiIndex.value);
+    removeEmojiFromHistory(btn);
+  }
+  // TODO open emoji dialog
+}
+
+function handleKeydown(e) {
+  // TODO
+  switch (e.keyCode) {
+    case 9: // Tab
+      e.preventDefault();
+      emojiNav(!e.shiftKey);
+      break;
+    case 13: // Enter
+      e.preventDefault();
+      if (highlightedBtn) handleEmojiBtnClick(e, highlightedBtn);
+      break;
   }
 }
 
@@ -174,18 +197,38 @@ async function addEmojiToHistory(btn) {
   await db.execute('INSERT INTO used_emojis (emoji_name) VALUES (?);', [btn.title]);
   let rows = await db.select('SELECT rowid, * FROM used_emojis ORDER BY rowid ASC');
   const rowsToDelete = rows.length - 100;
-  let response;
   if (rowsToDelete > 0) {
     let deletedRows = 0;
     for (let i=0; i<rows.length; ++i) {
       if (deletedRows < rowsToDelete) {
-        response = await db.execute('DELETE FROM used_emojis WHERE rowid=?;', [rows[i].rowid]);
+        await db.execute('DELETE FROM used_emojis WHERE rowid=?;', [rows[i].rowid]);
         ++deletedRows;
       } else {
-        response = await db.execute('UPDATE used_emojis SET rowid=? WHERE rowid=?;', [(i - deletedRows + 1), rows[i].rowid]);
+        await db.execute('UPDATE used_emojis SET rowid=? WHERE rowid=?;', [(i - deletedRows + 1), rows[i].rowid]);
       }
     }
   }
+}
+
+function removeEmojiFromHistory(btn) {
+  if (btn.dataset.used === 'true') emojiNav();
+  const usedEmojiBtns = document.querySelectorAll('.emoji-btn[data-used="true"]');
+  for (const usedEmojiBtn of usedEmojiBtns) {
+    if (usedEmojiBtn.title === btn.title) {
+      usedEmojiBtn.remove();
+      break;
+    }
+  }
+  db.execute('DELETE FROM used_emojis WHERE emoji_name=?;', [btn.title]);
+}
+
+function clearEmojiHistory() {
+  const usedEmojiBtns = document.querySelectorAll('.emoji-btn[data-used="true"]');
+  for (const usedEmojiBtn of usedEmojiBtns) {
+    usedEmojiBtn.remove();
+  }
+  db.execute('DELETE FROM used_emojis WHERE emoji_name=?;', [btn.title]);
+  if (highlightedBtn && highlightedBtn.dataset.used === 'true') emojiNav();
 }
 
 function togglePinnedEmoji(sourceBtn, onLoad = false) {
@@ -220,19 +263,6 @@ async function savePinnedEmojisToDb() {
   const pinnedBtns = document.querySelectorAll('.emoji-btn[data-pinned]');
   for (const pinnedBtn of pinnedBtns) {
     await db.execute('INSERT INTO pinned_emojis (emoji_name) VALUES (?);', [pinnedBtn.title]);
-  }
-}
-
-function handleKeydown(e) {
-  switch (e.keyCode) {
-    case 9: // Tab
-      e.preventDefault();
-      emojiNav(!e.shiftKey);
-      break;
-    case 13: // Enter
-      e.preventDefault();
-      if (highlightedBtn) handleEmojiBtnClick(e, highlightedBtn);
-      break;
   }
 }
 
