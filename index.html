@@ -23,19 +23,19 @@
     
 </head>
 
-<body class="dark:bg-black hide-unsupported st1-false st2-false hair-false dir-false">
+<body class="dark:bg-black hide-unsupported st1-false st2-false hair-false dir-false dialog-emoji">
     <main>
         
         <div class="fixed top-0 left-0 right-0 z-10 px-4 py-2 bg-gray-100 dark:bg-gray-900">
             <div class="relative">
-                <input type="text" name="filter" id="filter-input" oninput="filterEmojis(event)" placeholder="Search" ref="filterinput" id="filterinput" class="block w-full rounded-md bg-white dark:bg-gray-800 px-3 py-1.5 text-base text-black dark:text-gray-100 outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-0 focus-visible:-outline-offset-2 focus-visible:outline-indigo-500 sm:text-sm/6" />
-                <button type="button" class="absolute top-0 right-0 flex items-center justify-center text-gray-700 rounded-md cursor-pointer size-10 dark:text-gray-300">
+                <input type="text" id="filter-input" oninput="filterEmojis(event)" placeholder="Search" class="block w-full rounded-md bg-white dark:bg-gray-800 px-3 py-1.5 text-base text-black dark:text-gray-100 outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-0 focus-visible:-outline-offset-2 focus-visible:outline-indigo-500 sm:text-sm/6" />
+                <button type="button" onclick="clearFilterInput()" class="absolute top-0 right-0 flex items-center justify-center text-gray-700 rounded-md cursor-pointer size-10 dark:text-gray-300">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x size-5"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
                 </button>
             </div>
         </div>
         
-        <div id="filtered-emojis" class="flex flex-wrap items-start justify-center gap-2 p-2 mt-[3.375rem] mb-[12rem]">
+        <div id="filtered-emojis" class="flex flex-wrap items-start justify-center gap-2 p-2 mt-13.5 mb-48">
             
             <button type="button" class="emoji-btn" title="grinning face" data-base-name="grinning face" data-category="Smileys &amp; Emotion" data-subcategory="face-smiling" data-code="1F600" data-searchable-text="grinning face smileys &amp; emotion face-smiling" onclick="handleEmojiBtnClick(event, event.target)">😀</button>
             <button type="button" class="emoji-btn" title="grinning face with big eyes" data-base-name="grinning face with big eyes" data-category="Smileys &amp; Emotion" data-subcategory="face-smiling" data-code="1F603" data-searchable-text="grinning face with big eyes smileys &amp; emotion face-smiling" onclick="handleEmojiBtnClick(event, event.target)">😃</button>
@@ -3993,102 +3993,423 @@
             
         </div>
         
-        <div class="fixed bottom-0 left-0 right-0 z-10 px-4 py-2 bg-gray-100 dark:bg-gray-900">
+        <div class="fixed bottom-0 left-0 right-0 z-10 flex items-center px-4 py-2 bg-gray-100 dark:bg-gray-900">
             
-            <div class="flex items-center">
-                
-                <div class="flex items-center justify-center text-gray-400 shrink-0 size-10">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-icon lucide-clipboard"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>
-                </div>
-                
-                <button id="selected-emoji-model-btn" type="button" class="relative flex items-center justify-center hidden p-1 text-3xl rounded-md cursor-pointer group focus:outline-none min-w-10 min-h-10"></button>
-                
-                <div id="selected-emojis" class="flex flex-wrap items-center gap-1 grow"></div>
-                
+            <div class="flex items-center justify-center text-gray-400 shrink-0 size-10">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-icon lucide-clipboard"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>
             </div>
             
-            <div class="inline-block">
-                <!-- <label for="theme" class="block text-sm font-semibold text-gray-700 dark:text-gray-200">Theme</label> -->
-                <select id="select-theme" onchange="setSetting('theme', event.target.value, true)" class="mt-1 rounded-md bg-white dark:bg-gray-800 pl-3 py-1.5 text-base text-black dark:text-gray-100 outline-1 -outline-offset-1 outline-white/10 focus:outline-0 focus-visible:-outline-offset-2 focus-visible:outline-indigo-500 sm:text-sm/6">
-                    <option value="system">System</option>
-                    <option value="light">Light</option>
-                    <option value="dark">Dark</option>
-                </select>
-            </div>
-                
-            <div class="inline-block">
-                <!-- <label for="emoji-size" class="block text-sm font-semibold text-gray-700 dark:text-gray-200">Emoji Size</label> -->
-                <select id="select-emoji_size" onchange="setSetting('emoji_size', event.target.value, true)" class="mt-1 rounded-md bg-white dark:bg-gray-800 pl-3 py-1.5 text-base text-black dark:text-gray-100 outline-1 -outline-offset-1 outline-white/10 focus:outline-0 focus-visible:-outline-offset-2 focus-visible:outline-indigo-500 sm:text-sm/6">
-                    <option value="small">Small</option>
-                    <option value="medium">Medium</option>
-                    <option value="large">Large</option>
-                </select>
-            </div>
+            <button id="selected-emoji-model-btn" type="button" class="relative flex items-center justify-center hidden h-10 p-1 text-3xl rounded-md cursor-pointer focus:outline-none min-w-10"></button>
             
-            <div class="inline-block">
-                <!-- <label for="st1" class="block text-sm font-semibold text-gray-700 dark:text-gray-200">Skin Tone 1</label> -->
-                <select id="select-st1" onchange="setSetting('st1', event.target.value, true)" class="mt-1 rounded-md bg-white dark:bg-gray-800 pl-3 py-1.5 text-base text-black dark:text-gray-100 outline-1 -outline-offset-1 outline-white/10 focus:outline-0 focus-visible:-outline-offset-2 focus-visible:outline-indigo-500 sm:text-sm/6">
-                    <option value="false">✋ Base</option>
-                    <option value="lst">✋🏻 Light</option>
-                    <option value="mlst">✋🏼 Medium-Light</option>
-                    <option value="mst">✋🏽 Medium</option>
-                    <option value="mdst">✋🏾 Medium-Dark</option>
-                    <option value="dst">✋🏿 Dark</option>
-                </select>
-            </div>
+            <div id="selected-emojis" class="flex flex-wrap items-center gap-1 grow"></div>
             
-            <div class="inline-block">
-                <!-- <label for="st2" class="block text-sm font-semibold text-gray-700 dark:text-gray-200">Skin Tone 1</label> -->
-                <select id="select-st2" onchange="setSetting('st2', event.target.value, true)" class="mt-1 rounded-md bg-white dark:bg-gray-800 pl-3 py-1.5 text-base text-black dark:text-gray-100 outline-1 -outline-offset-1 outline-white/10 focus:outline-0 focus-visible:-outline-offset-2 focus-visible:outline-indigo-500 sm:text-sm/6">
-                    <option value="false" id="st2-option-false">✋ Base</option>
-                    <option value="lst" id="st2-option-lst">✋🏻 Light</option>
-                    <option value="mlst" id="st2-option-mlst">✋🏼 Medium-Light</option>
-                    <option value="mst" id="st2-option-mst">✋🏽 Medium</option>
-                    <option value="mdst" id="st2-option-mdst">✋🏾 Medium-Dark</option>
-                    <option value="dst" id="st2-option-dst">✋🏿 Dark</option>
-                </select>
-            </div>
+            <button type="button" class="flex items-center justify-center p-1 ml-8 text-blue-800 rounded-md cursor-pointer shrink-0 size-10 dark:text-blue-100 focus:outline-none" onclick="showDialog('help')" title="Show Help Dialog">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-question-mark-icon lucide-circle-question-mark size-5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+            </button>
             
-            <div class="inline-block">
-                <!-- <label for="hair" class="block text-sm font-semibold text-gray-700 dark:text-gray-200">Hair</label> -->
-                <select id="select-hair" onchange="setSetting('hair', event.target.value, true)" class="mt-1 rounded-md bg-white dark:bg-gray-800 pl-3 py-1.5 text-base text-black dark:text-gray-100 outline-1 -outline-offset-1 outline-white/10 focus:outline-0 focus-visible:-outline-offset-2 focus-visible:outline-indigo-500 sm:text-sm/6 disabled:opacity-30">
-                    <option value="false">🧑 Base</option>
-                    <option value="blond">👱 Blond</option>
-                    <option value="beard">🧔 Beard</option>
-                    <option value="red">🧑‍🦰 Red</option>
-                    <option value="curly">🧑‍🦱 Curly</option>
-                    <option value="white">🧑‍🦳 White</option>
-                    <option value="bald">🧑‍🦲 Bald</option>
-                </select>
-            </div>
-                
-            <div class="inline-block">
-                <!-- <label for="dir" class="block text-sm font-semibold text-gray-700 dark:text-gray-200">Direction</label> -->
-                <select id="select-dir" onchange="setSetting('dir', event.target.value, true)" class="mt-1 rounded-md bg-white dark:bg-gray-800 pl-3 py-1.5 text-base text-black dark:text-gray-100 outline-1 -outline-offset-1 outline-white/10 focus:outline-0 focus-visible:-outline-offset-2 focus-visible:outline-indigo-500 sm:text-sm/6 disabled:opacity-30">
-                <option value="false">🚶 Base</option>
-                <option value="right">🚶‍➡️ Right</option>
-                </select>
-            </div>
-            
-            <div class="inline-block">
-                <div class="flex flex-wrap items-center gap-8">
-                    <label for="checkbox-show_unsupported_emojis" class="flex items-center gap-2 cursor-pointer">
-                        <input id="checkbox-show_unsupported_emojis" type="checkbox" value="true" class="rounded-md" onchange="setSetting('show_unsupported_emojis', event.target.checked, true)" />
-                        Show unsupported emojis (may not be accurate)
-                    </label>
-                </div>
-            </div>
-            
-            <div class="inline-block">
-                <div class="flex flex-wrap items-center gap-8">
-                    <label for="checkbox-close_on_copy" class="flex items-center gap-2 cursor-pointer">
-                        <input id="checkbox-close_on_copy" type="checkbox" value="true" class="rounded-md" onchange="setSetting('close_on_copy', event.target.checked, true)" />
-                        Close app after copying a single emoji
-                    </label>
-                </div>
-            </div>
+            <button type="button" class="flex items-center justify-center p-1 ml-2 text-blue-800 rounded-md cursor-pointer shrink-0 size-10 dark:text-blue-100 focus:outline-none" onclick="showDialog('settings')" title="Show Settings Dialog">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-icon lucide-settings size-5"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
             
         </div>
+        
+        <dialog id="dialog" aria-labelledby="dialog-title" class="fixed inset-0 z-20 overflow-y-auto bg-transparent size-auto max-h-none max-w-none">
+            <div data-closed id="dialog-backdrop" class="fixed inset-0 transition-opacity duration-150 bg-gray-800/75 data-closed:opacity-0" onclick="closeDialog()"></div>
+            <div tabindex="0" class="flex items-center justify-center h-full max-h-screen min-h-full p-4 text-center focus:outline-none sm:p-0">
+                <div data-closed id="dialog-panel" class="relative w-full h-auto max-h-screen text-left transition-all duration-150 transform bg-gray-100 rounded-lg shadow-xl dark:bg-black dark:text-gray-50 data-closed:translate-y-4 data-closed:opacity-0 sm:my-8 sm:max-w-lg data-closed:sm:translate-y-0 data-closed:sm:scale-95">
+                    <div class="flex flex-col max-h-[calc(100vh-(--spacing(6)))] pt-4 sm:pt-4">
+                        
+                        <div class="flex justify-between px-4 gap-x-8 sm:px-6 shrink-0">
+                            
+                            <h2 id="dialog-title" class="text-2xl font-medium text-gray-600 grow dark:text-gray-300">
+                                <span id="dialog-emoji-title" class="dialog-emoji-content text-xl">Emoji</span>
+                                <span class="dialog-help-content">Help</span>
+                                <span class="dialog-settings-content">Settings</span>
+                            </h2>
+                            
+                            <button type="button" onclick="closeDialog()" class="relative flex items-center justify-center rounded-md cursor-pointer size-10 shrink-0 -top-1 -right-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x size-5"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                            </button>
+                            
+                        </div>
+                        
+                        <div class="px-4 pt-4 pb-10 overflow-y-auto sm:pb-8 sm:px-6" style="min-height:1px;">
+                            
+                            <div class="dialog-emoji-content">
+                                
+                                <div class="-mt-3">
+                                    <span id="dialog-emoji-category"></span>
+                                    <span class="text-gray-500 dark:text-gray-400">/</span>
+                                    <span id="dialog-emoji-subcategory"></span>
+                                    <span class="text-gray-500 dark:text-gray-400">/</span>
+                                    <button type="button" id="add-extra-searchable-text-btn" class="cursor-pointer text-blue-300 hover:text-blue-600 transition-colors dark:text-blue-300">[add searchable text]</button>
+                                    <span id="dialog-emoji-extra-searchable-text"></span>
+                                </div>
+                                
+                                <div id="dialog-emojis" class="flex flex-wrap items-start justify-center gap-2 mt-5"></div>
+                                
+                            </div>
+                            
+                            <div class="dialog-help-content">
+                                
+                                <table class="w-full whitespace-nowrap">
+                                    <tbody class="[&>*:not(:last-child)]:border-b *:border-gray-700">
+                                        <tr>
+                                            <td class="px-1 py-2 pr-2">
+                                                Copy emoji
+                                            </td>
+                                            <td class="px-1 py-2 text-right">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mouse-icon lucide-mouse inline size-6 text-gray-700 dark:text-gray-200 relative bottom-0.5 -mr-1"><rect x="5" y="2" width="14" height="20" rx="7"/><path d="M12 6v4"/></svg>
+                                                = Click or
+                                                <span class="inline-block h-6 px-2 bg-gray-700 text-white dark:bg-gray-200 dark:text-black rounded">
+                                                    Enter
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-1 py-2 pr-2">
+                                                Copy multiple emoji
+                                            </td>
+                                            <td class="px-1 py-2 text-right">
+                                                <span class="inline-block h-6 px-2 bg-gray-700 text-white dark:bg-gray-200 dark:text-black rounded">
+                                                    Shift
+                                                </span>
+                                                +
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mouse-icon lucide-mouse inline size-6 text-gray-700 dark:text-gray-200 relative bottom-0.5 -ml-1"><rect x="5" y="2" width="14" height="20" rx="7"/><path d="M12 6v4"/></svg>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-1 py-2 pr-2">
+                                                Open emoji info
+                                            </td>
+                                            <td class="px-1 py-2 text-right">
+                                                <span class="inline-block h-6 px-2 bg-gray-700 text-white dark:bg-gray-200 dark:text-black rounded">
+                                                    Alt
+                                                </span>
+                                                +
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mouse-icon lucide-mouse inline size-6 text-gray-700 dark:text-gray-200 relative bottom-0.5 -ml-1"><rect x="5" y="2" width="14" height="20" rx="7"/><path d="M12 6v4"/></svg>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-1 py-2 pr-2">
+                                                Pin / Unpin emoji
+                                            </td>
+                                            <td class="px-1 py-2 text-right">
+                                                <span class="inline-block h-6 px-2 bg-gray-700 text-white dark:bg-gray-200 dark:text-black rounded">
+                                                    Ctrl
+                                                </span>
+                                                +
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mouse-icon lucide-mouse inline size-6 text-gray-700 dark:text-gray-200 relative bottom-0.5 -ml-1"><rect x="5" y="2" width="14" height="20" rx="7"/><path d="M12 6v4"/></svg>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-1 py-2 pr-2">
+                                                Remove from history
+                                            </td>
+                                            <td class="px-1 py-2 text-right">
+                                                <span class="inline-block h-6 px-2 bg-gray-700 text-white dark:bg-gray-200 dark:text-black rounded">
+                                                    Ctrl
+                                                </span>
+                                                +
+                                                <span class="inline-block h-6 px-2 bg-gray-700 text-white dark:bg-gray-200 dark:text-black rounded">
+                                                    Shift
+                                                </span>
+                                                +
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mouse-icon lucide-mouse inline size-6 text-gray-700 dark:text-gray-200 relative bottom-0.5 -ml-1"><rect x="5" y="2" width="14" height="20" rx="7"/><path d="M12 6v4"/></svg>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-1 py-2 pr-2">
+                                                Next emoji
+                                            </td>
+                                            <td class="px-1 py-2 text-right">
+                                                <span class="inline-block h-6 px-2 bg-gray-700 text-white dark:bg-gray-200 dark:text-black rounded">
+                                                    Tab
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-1 py-2 pr-2">
+                                                Previous emoji
+                                            </td>
+                                            <td class="px-1 py-2 text-right">
+                                                <span class="inline-block h-6 px-2 bg-gray-700 text-white dark:bg-gray-200 dark:text-black rounded">
+                                                    Shift
+                                                </span>
+                                                +
+                                                <span class="inline-block h-6 px-2 bg-gray-700 text-white dark:bg-gray-200 dark:text-black rounded">
+                                                    Tab
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-1 py-2 pr-2">
+                                                Clear filter / Close dialog
+                                            </td>
+                                            <td class="px-1 py-2 text-right">
+                                                <span class="inline-block h-6 px-2 bg-gray-700 text-white dark:bg-gray-200 dark:text-black rounded">
+                                                    Esc
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-1 py-2 pr-2">
+                                                Close app
+                                            </td>
+                                            <td class="px-1 py-2 text-right">
+                                                <span class="inline-block h-6 px-2 bg-gray-700 text-white dark:bg-gray-200 dark:text-black rounded">
+                                                    Ctrl
+                                                </span>
+                                                +
+                                                <span class="inline-flex items-center justify-center bg-gray-700 text-white dark:bg-gray-200 dark:text-black rounded size-6">
+                                                    W
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                
+                                <h3 class="text-lg text-gray-600 dark:text-gray-300 mt-8">About</h3>
+                                
+                                <div class="mt-3">
+                                    <p class="mt-3 text-sm">
+                                        App version: 0.1.0
+                                    </p>
+
+                                    <p class="mt-3 text-sm">
+                                        Source code: <a href="https://github.com/cliambrown/clemoji" target="_blank" class="text-blue-600 underline dark:text-blue-300">github.com/cliambrown/clemoji</a>
+                                    </p>
+                                </div>
+                                
+                            </div>
+                            
+                            <div class="dialog-settings-content">
+                
+                                <div class="flex flex-wrap items-start gap-x-6 gap-y-4 sm:gap-x-8 sm:gap-y-6">
+                                     
+                                    <div>
+                                        <label for="theme" class="block text-sm font-semibold text-gray-700 dark:text-gray-200">Theme</label>
+                                        <select id="select-theme" onchange="setSetting('theme', event.target.value)" class="mt-1 rounded-md bg-white dark:bg-gray-800 pl-3 py-1.5 text-base text-black dark:text-gray-100 outline-1 -outline-offset-1 outline-white/10 focus:outline-0 focus-visible:-outline-offset-2 focus-visible:outline-indigo-500 sm:text-sm/6">
+                                            <option value="system">System</option>
+                                            <option value="light">Light</option>
+                                            <option value="dark">Dark</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="emoji-size" class="block text-sm font-semibold text-gray-700 dark:text-gray-200">Emoji Size</label>
+                                        <select id="select-emoji_size" onchange="setSetting('emoji_size', event.target.value)" class="mt-1 rounded-md bg-white dark:bg-gray-800 pl-3 py-1.5 text-base text-black dark:text-gray-100 outline-1 -outline-offset-1 outline-white/10 focus:outline-0 focus-visible:-outline-offset-2 focus-visible:outline-indigo-500 sm:text-sm/6">
+                                            <option value="small">Small</option>
+                                            <option value="medium">Medium</option>
+                                            <option value="large">Large</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="input-max_used_emojis" class="block text-sm font-semibold text-gray-700 dark:text-gray-200">Max History</label>
+                                        <input type="number" id="input-max_used_emojis" min="0" max="50" value="10" oninput="setSetting('max_used_emojis', event.target.value)" class="mt-1 w-24 rounded-md bg-white dark:bg-gray-800 px-3 py-1.5 text-base text-black dark:text-gray-100 outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-0 focus-visible:-outline-offset-2 focus-visible:outline-indigo-500 sm:text-sm/6" />
+                                    </div>
+                                    
+                                </div>
+                                
+                                <div class="mt-6">
+                                    <div class="flex flex-wrap items-center gap-8">
+                                        <label for="checkbox-close_on_copy" class="flex items-center gap-2 cursor-pointer">
+                                            <input id="checkbox-close_on_copy" type="checkbox" value="true" class="rounded-md" onchange="setSetting('close_on_copy', event.target.checked)" />
+                                            Close app after copying a single emoji
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-6 dialog-settings-content">
+                                    <div class="flex flex-wrap items-center gap-8">
+                                        <label for="checkbox-show_unsupported_emojis" class="flex items-center gap-2 cursor-pointer">
+                                            <input id="checkbox-show_unsupported_emojis" type="checkbox" value="true" class="rounded-md" onchange="setSetting('show_unsupported_emojis', event.target.checked)" />
+                                            Show emojis that seem to be unsupported
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex flex-wrap items-center gap-6 mt-6">
+                                    
+                                    <div>
+                                        <div class="flex flex-wrap items-center gap-8">
+                                            <label for="checkbox-remember_used_emojis" class="flex items-center gap-2 cursor-pointer">
+                                                <input id="checkbox-remember_used_emojis" type="checkbox" value="true" class="rounded-md" onchange="setSetting('remember_used_emojis', event.target.checked)" />
+                                                Remember used emojis
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <button type="button" onclick="clearEmojiHistory()" class="flex items-center justify-center h-10 gap-2 px-4 text-sm font-semibold bg-gray-200 rounded-md cursor-pointer darK:text-gray-100 dark:bg-gray-700 shrink-0 whitespace-nowrap">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock-icon lucide-clock size-4"><path d="M12 6v6l4 2"/><circle cx="12" cy="12" r="10"/></svg>
+                                            Clear History
+                                        </button>
+                                    </div>
+                                    
+                                </div>
+                                
+                                <h3 class="text-lg text-gray-600 dark:text-gray-300 mt-8">Default emoji (where applicable)</h3>
+                                
+                                <div class="flex flex-wrap items-start mt-4 gap-x-6 gap-y-4 sm:gap-x-8 sm:gap-y-6">
+                                    
+                                    <div>
+                                        <label for="st1" class="block text-sm font-semibold text-gray-700 dark:text-gray-200">Skin Tone 1</label>
+                                        <select id="select-st1" onchange="setSetting('st1', event.target.value)" class="mt-1 rounded-md bg-white dark:bg-gray-800 pl-3 py-1.5 text-base text-black dark:text-gray-100 outline-1 -outline-offset-1 outline-white/10 focus:outline-0 focus-visible:-outline-offset-2 focus-visible:outline-indigo-500 sm:text-sm/6">
+                                            <option value="false">✋ Default</option>
+                                            <option value="lst">✋🏻 Light</option>
+                                            <option value="mlst">✋🏼 Medium-Light</option>
+                                            <option value="mst">✋🏽 Medium</option>
+                                            <option value="mdst">✋🏾 Medium-Dark</option>
+                                            <option value="dst">✋🏿 Dark</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="st2" class="block text-sm font-semibold text-gray-700 dark:text-gray-200">Skin Tone 1</label>
+                                        <select id="select-st2" onchange="setSetting('st2', event.target.value)" class="mt-1 rounded-md bg-white dark:bg-gray-800 pl-3 py-1.5 text-base text-black dark:text-gray-100 outline-1 -outline-offset-1 outline-white/10 focus:outline-0 focus-visible:-outline-offset-2 focus-visible:outline-indigo-500 sm:text-sm/6">
+                                            <option value="false" id="st2-option-false">✋ Default</option>
+                                            <option value="lst" id="st2-option-lst">✋🏻 Light</option>
+                                            <option value="mlst" id="st2-option-mlst">✋🏼 Medium-Light</option>
+                                            <option value="mst" id="st2-option-mst">✋🏽 Medium</option>
+                                            <option value="mdst" id="st2-option-mdst">✋🏾 Medium-Dark</option>
+                                            <option value="dst" id="st2-option-dst">✋🏿 Dark</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="hair" class="block text-sm font-semibold text-gray-700 dark:text-gray-200">Hair</label>
+                                        <select id="select-hair" onchange="setSetting('hair', event.target.value)" class="mt-1 rounded-md bg-white dark:bg-gray-800 pl-3 py-1.5 text-base text-black dark:text-gray-100 outline-1 -outline-offset-1 outline-white/10 focus:outline-0 focus-visible:-outline-offset-2 focus-visible:outline-indigo-500 sm:text-sm/6 disabled:opacity-30">
+                                            <option value="false">🧑 Default</option>
+                                            <option value="blond">👱 Blond</option>
+                                            <option value="beard">🧔 Beard</option>
+                                            <option value="red">🧑‍🦰 Red</option>
+                                            <option value="curly">🧑‍🦱 Curly</option>
+                                            <option value="white">🧑‍🦳 White</option>
+                                            <option value="bald">🧑‍🦲 Bald</option>
+                                        </select>
+                                    </div>
+                                        
+                                    <div>
+                                        <label for="dir" class="block text-sm font-semibold text-gray-700 dark:text-gray-200">Direction</label>
+                                        <select id="select-dir" onchange="setSetting('dir', event.target.value)" class="mt-1 rounded-md bg-white dark:bg-gray-800 pl-3 py-1.5 text-base text-black dark:text-gray-100 outline-1 -outline-offset-1 outline-white/10 focus:outline-0 focus-visible:-outline-offset-2 focus-visible:outline-indigo-500 sm:text-sm/6 disabled:opacity-30">
+                                        <option value="false">🚶 Default</option>
+                                        <option value="right">🚶‍➡️ Right</option>
+                                        </select>
+                                    </div>
+                                    
+                                </div>
+                                
+                                <div id="sample-emojis" class="flex flex-wrap gap-4 mt-6">
+                                    
+                                    <div class="sample-emoji" title="smiling face with sunglasses">😎</div>
+                                    
+                                    <div class="sample-emoji" title="thumbs up" data-st1="false">👍</div>
+                                    <div class="sample-emoji" title="thumbs up: light skin tone" data-st1="lst">👍🏻</div>
+                                    <div class="sample-emoji" title="thumbs up: medium-light skin tone" data-st1="mlst">👍🏼</div>
+                                    <div class="sample-emoji" title="thumbs up: medium skin tone" data-st1="mst">👍🏽</div>
+                                    <div class="sample-emoji" title="thumbs up: medium-dark skin tone" data-st1="mdst">👍🏾</div>
+                                    <div class="sample-emoji" title="thumbs up: dark skin tone" data-st1="dst">👍🏿</div>
+                                    
+                                    <div class="sample-emoji" title="handshake" data-st1="false" data-st2="false">🤝</div>
+                                    <div class="sample-emoji" title="handshake: light skin tone" data-st1="lst" data-st2="lst">🤝🏻</div>
+                                    <div class="sample-emoji" title="handshake: light skin tone, medium-light skin tone" data-st1="lst" data-st2="mlst">🫱🏻‍🫲🏼</div>
+                                    <div class="sample-emoji" title="handshake: light skin tone, medium skin tone" data-st1="lst" data-st2="mst">🫱🏻‍🫲🏽</div>
+                                    <div class="sample-emoji" title="handshake: light skin tone, medium-dark skin tone" data-st1="lst" data-st2="mdst">🫱🏻‍🫲🏾</div>
+                                    <div class="sample-emoji" title="handshake: light skin tone, dark skin tone" data-st1="lst" data-st2="dst">🫱🏻‍🫲🏿</div>
+                                    <div class="sample-emoji" title="handshake: medium-light skin tone" data-st1="mlst" data-st2="mlst">🤝🏼</div>
+                                    <div class="sample-emoji" title="handshake: medium-light skin tone, light skin tone" data-st1="mlst" data-st2="lst">🫱🏼‍🫲🏻</div>
+                                    <div class="sample-emoji" title="handshake: medium-light skin tone, medium skin tone" data-st1="mlst" data-st2="mst">🫱🏼‍🫲🏽</div>
+                                    <div class="sample-emoji" title="handshake: medium-light skin tone, medium-dark skin tone" data-st1="mlst" data-st2="mdst">🫱🏼‍🫲🏾</div>
+                                    <div class="sample-emoji" title="handshake: medium-light skin tone, dark skin tone" data-st1="mlst" data-st2="dst">🫱🏼‍🫲🏿</div>
+                                    <div class="sample-emoji" title="handshake: medium skin tone" data-st1="mst" data-st2="mst">🤝🏽</div>
+                                    <div class="sample-emoji" title="handshake: medium skin tone, light skin tone" data-st1="mst" data-st2="lst">🫱🏽‍🫲🏻</div>
+                                    <div class="sample-emoji" title="handshake: medium skin tone, medium-light skin tone" data-st1="mst" data-st2="mlst">🫱🏽‍🫲🏼</div>
+                                    <div class="sample-emoji" title="handshake: medium skin tone, medium-dark skin tone" data-st1="mst" data-st2="mdst">🫱🏽‍🫲🏾</div>
+                                    <div class="sample-emoji" title="handshake: medium skin tone, dark skin tone" data-st1="mst" data-st2="dst">🫱🏽‍🫲🏿</div>
+                                    <div class="sample-emoji" title="handshake: medium-dark skin tone" data-st1="mdst" data-st2="mdst">🤝🏾</div>
+                                    <div class="sample-emoji" title="handshake: medium-dark skin tone, light skin tone" data-st1="mdst" data-st2="lst">🫱🏾‍🫲🏻</div>
+                                    <div class="sample-emoji" title="handshake: medium-dark skin tone, medium-light skin tone" data-st1="mdst" data-st2="mlst">🫱🏾‍🫲🏼</div>
+                                    <div class="sample-emoji" title="handshake: medium-dark skin tone, medium skin tone" data-st1="mdst" data-st2="mst">🫱🏾‍🫲🏽</div>
+                                    <div class="sample-emoji" title="handshake: medium-dark skin tone, dark skin tone" data-st1="mdst" data-st2="dst">🫱🏾‍🫲🏿</div>
+                                    <div class="sample-emoji" title="handshake: dark skin tone" data-st1="dst" data-st2="dst">🤝🏿</div>
+                                    <div class="sample-emoji" title="handshake: dark skin tone, light skin tone" data-st1="dst" data-st2="lst">🫱🏿‍🫲🏻</div>
+                                    <div class="sample-emoji" title="handshake: dark skin tone, medium-light skin tone" data-st1="dst" data-st2="mlst">🫱🏿‍🫲🏼</div>
+                                    <div class="sample-emoji" title="handshake: dark skin tone, medium skin tone" data-st1="dst" data-st2="mst">🫱🏿‍🫲🏽</div>
+                                    <div class="sample-emoji" title="handshake: dark skin tone, medium-dark skin tone" data-st1="dst" data-st2="mdst">🫱🏿‍🫲🏾</div>
+                                    
+                                    <div class="sample-emoji" title="person" data-st1="false" data-hair="false">🧑</div>
+                                    <div class="sample-emoji" title="person: blond hair" data-st1="false" data-hair="blond">👱</div>
+                                    <div class="sample-emoji" title="person: beard" data-st1="false" data-hair="beard">🧔</div>
+                                    <div class="sample-emoji" title="person: red hair" data-st1="false" data-hair="red">🧑‍🦰</div>
+                                    <div class="sample-emoji" title="person: curly hair" data-st1="false" data-hair="curly">🧑‍🦱</div>
+                                    <div class="sample-emoji" title="person: white hair" data-st1="false" data-hair="white">🧑‍🦳</div>
+                                    <div class="sample-emoji" title="person: bald" data-st1="false" data-hair="bald">🧑‍🦲</div>
+                                    <div class="sample-emoji" title="person: light skin tone" data-st1="lst" data-hair="false">🧑🏻</div>
+                                    <div class="sample-emoji" title="person: light skin tone, blond hair" data-st1="lst" data-hair="blond">👱🏻</div>
+                                    <div class="sample-emoji" title="person: light skin tone, beard" data-st1="lst" data-hair="beard">🧔🏻</div>
+                                    <div class="sample-emoji" title="person: light skin tone, red hair" data-st1="lst" data-hair="red">🧑🏻‍🦰</div>
+                                    <div class="sample-emoji" title="person: light skin tone, curly hair" data-st1="lst" data-hair="curly">🧑🏻‍🦱</div>
+                                    <div class="sample-emoji" title="person: light skin tone, white hair" data-st1="lst" data-hair="white">🧑🏻‍🦳</div>
+                                    <div class="sample-emoji" title="person: light skin tone, bald" data-st1="lst" data-hair="bald">🧑🏻‍🦲</div>
+                                    <div class="sample-emoji" title="person: medium-light skin tone" data-st1="mlst" data-hair="false">🧑🏼</div>
+                                    <div class="sample-emoji" title="person: medium-light skin tone, blond hair" data-st1="mlst" data-hair="blond">👱🏼</div>
+                                    <div class="sample-emoji" title="person: medium-light skin tone, beard" data-st1="mlst" data-hair="beard">🧔🏼</div>
+                                    <div class="sample-emoji" title="person: medium-light skin tone, red hair" data-st1="mlst" data-hair="red">🧑🏼‍🦰</div>
+                                    <div class="sample-emoji" title="person: medium-light skin tone, curly hair" data-st1="mlst" data-hair="curly">🧑🏼‍🦱</div>
+                                    <div class="sample-emoji" title="person: medium-light skin tone, white hair" data-st1="mlst" data-hair="white">🧑🏼‍🦳</div>
+                                    <div class="sample-emoji" title="person: medium-light skin tone, bald" data-st1="mlst" data-hair="bald">🧑🏼‍🦲</div>
+                                    <div class="sample-emoji" title="person: medium skin tone" data-st1="mst" data-hair="false">🧑🏽</div>
+                                    <div class="sample-emoji" title="person: medium skin tone, blond hair" data-st1="mst" data-hair="blond">👱🏽</div>
+                                    <div class="sample-emoji" title="person: medium skin tone, beard" data-st1="mst" data-hair="beard">🧔🏽</div>
+                                    <div class="sample-emoji" title="person: medium skin tone, red hair" data-st1="mst" data-hair="red">🧑🏽‍🦰</div>
+                                    <div class="sample-emoji" title="person: medium skin tone, curly hair" data-st1="mst" data-hair="curly">🧑🏽‍🦱</div>
+                                    <div class="sample-emoji" title="person: medium skin tone, white hair" data-st1="mst" data-hair="white">🧑🏽‍🦳</div>
+                                    <div class="sample-emoji" title="person: medium skin tone, bald" data-st1="mst" data-hair="bald">🧑🏽‍🦲</div>
+                                    <div class="sample-emoji" title="person: medium-dark skin tone" data-st1="mdst" data-hair="false">🧑🏾</div>
+                                    <div class="sample-emoji" title="person: medium-dark skin tone, blond hair" data-st1="mdst" data-hair="blond">👱🏾</div>
+                                    <div class="sample-emoji" title="person: medium-dark skin tone, beard" data-st1="mdst" data-hair="beard">🧔🏾</div>
+                                    <div class="sample-emoji" title="person: medium-dark skin tone, red hair" data-st1="mdst" data-hair="red">🧑🏾‍🦰</div>
+                                    <div class="sample-emoji" title="person: medium-dark skin tone, curly hair" data-st1="mdst" data-hair="curly">🧑🏾‍🦱</div>
+                                    <div class="sample-emoji" title="person: medium-dark skin tone, white hair" data-st1="mdst" data-hair="white">🧑🏾‍🦳</div>
+                                    <div class="sample-emoji" title="person: medium-dark skin tone, bald" data-st1="mdst" data-hair="bald">🧑🏾‍🦲</div>
+                                    <div class="sample-emoji" title="person: dark skin tone" data-st1="dst" data-hair="false">🧑🏿</div>
+                                    <div class="sample-emoji" title="person: dark skin tone, blond hair" data-st1="dst" data-hair="blond">👱🏿</div>
+                                    <div class="sample-emoji" title="person: dark skin tone, beard" data-st1="dst" data-hair="beard">🧔🏿</div>
+                                    <div class="sample-emoji" title="person: dark skin tone, red hair" data-st1="dst" data-hair="red">🧑🏿‍🦰</div>
+                                    <div class="sample-emoji" title="person: dark skin tone, curly hair" data-st1="dst" data-hair="curly">🧑🏿‍🦱</div>
+                                    <div class="sample-emoji" title="person: dark skin tone, white hair" data-st1="dst" data-hair="white">🧑🏿‍🦳</div>
+                                    <div class="sample-emoji" title="person: dark skin tone, bald" data-st1="dst" data-hair="bald">🧑🏿‍🦲</div>
+                                    
+                                    <div class="sample-emoji" title="person walking" data-st1="false" data-dir="false">🚶</div>
+                                    <div class="sample-emoji" title="person walking: light skin tone" data-st1="lst" data-dir="false">🚶🏻</div>
+                                    <div class="sample-emoji" title="person walking: medium-light skin tone" data-st1="mlst" data-dir="false">🚶🏼</div>
+                                    <div class="sample-emoji" title="person walking: medium skin tone" data-st1="mst" data-dir="false">🚶🏽</div>
+                                    <div class="sample-emoji" title="person walking: medium-dark skin tone" data-st1="mdst" data-dir="false">🚶🏾</div>
+                                    <div class="sample-emoji" title="person walking: dark skin tone" data-st1="dst" data-dir="false">🚶🏿</div>
+                                    <div class="sample-emoji" title="person walking: facing right" data-st1="false" data-dir="right">🚶‍➡️</div>
+                                    <div class="sample-emoji" title="person walking: light skin tone, facing right" data-st1="lst" data-dir="right">🚶🏻‍➡️</div>
+                                    <div class="sample-emoji" title="person walking: medium-light skin tone, facing right" data-st1="mlst" data-dir="right">🚶🏼‍➡️</div>
+                                    <div class="sample-emoji" title="person walking: medium skin tone, facing right" data-st1="mst" data-dir="right">🚶🏽‍➡️</div>
+                                    <div class="sample-emoji" title="person walking: medium-dark skin tone, facing right" data-st1="mdst" data-dir="right">🚶🏾‍➡️</div>
+                                    <div class="sample-emoji" title="person walking: dark skin tone, facing right" data-st1="dst" data-dir="right">🚶🏿‍➡️</div>
+                                    
+                                </div>
+                                
+                            </div>
+                            
+                        </div>
+                        
+                        <div class="dialog-emoji-content px-4 py-2">
+                            <input type="text" id="input-extra-searchable-text" oninput="updateExtraSearchableText()" placeholder="Custom search text" class="block w-full rounded-md bg-white dark:bg-gray-800 px-3 py-1.5 text-base text-black dark:text-gray-100 outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-0 focus-visible:-outline-offset-2 focus-visible:outline-indigo-500 sm:text-sm/6" />
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+            
+        </dialog>
         
     </main>
 </body>
