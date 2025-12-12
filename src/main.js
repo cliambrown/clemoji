@@ -1,11 +1,18 @@
-const Database = window.__TAURI__.sql;
-const { exit } = window.__TAURI__.process;
+import copy from '/node_modules/copy-text-to-clipboard/index.js';
+import Database from '@tauri-apps/plugin-sql';
+import { exit } from '@tauri-apps/plugin-process';
 
 let db;
 let usedEmojis = [];
 let highlightedBtn = null;
 let selectedEmojis = [];
 let extraSearchableTexts = {};
+let dialogOpen = false;
+let dialogMode = 'emoji';
+let dialogEmojiBtns = [];
+let dialogEmojiBaseName = null;
+let highlightedDialogBtn = null;
+let updateExtraSearchableTextTimeout = null;
 
 const filterStyleSheet = document.getElementById('filter_style').sheet;
 const filterInput = document.getElementById('filter-input');
@@ -14,79 +21,9 @@ const selectedEmojisEl = document.getElementById('selected-emojis');
 const selectedEmojiModelBtn = document.getElementById('selected-emoji-model-btn');
 let emojiBtns = filteredEmojisEl.getElementsByClassName('emoji-btn');
 
-let dialogOpen = false;
-let dialogMode = 'emoji';
 const dialog = document.getElementById('dialog');
 const dialogBackdrop = document.getElementById('dialog-backdrop');
 const dialogPanel = document.getElementById('dialog-panel');
-
-/**
- * Initialize settings
- */
-const settings = {
-  theme: 'system',
-  emoji_size: 'medium',
-  max_used_emojis: 10,
-  remember_used_emojis: true,
-  show_unsupported_emojis: false,
-  close_on_copy: true,
-  st1: 'false',
-  st2: 'false',
-  hair: 'false',
-  dir: 'false',
-};
-
-if ('emoji_size' in localStorage) setSetting('emoji_size', localStorage.emoji_size, true);
-if ('max_used_emojis' in localStorage) setSetting('max_used_emojis', parseIntSafe(localStorage.max_used_emojis), true);
-if ('close_on_copy' in localStorage) setSetting('close_on_copy', parseBooleanSafe(localStorage.close_on_copy), true);
-
-async function loadStore() {
-  
-  db = await Database.load('sqlite:clemoji.db');
-  let rows;
-  
-  // Get used emojis
-  rows = await db.select('SELECT rowid, * FROM used_emojis ORDER BY rowid DESC LIMIT 100');
-  rowLoop: for (let i=0; i<rows.length; ++i) {
-    for (let j=0; j<usedEmojis.length; ++j) {
-      if (usedEmojis[j].name === rows[i].emoji_name) {
-        usedEmojis[j].hotness += rows.length - i;
-        continue rowLoop;
-      }
-    }
-    usedEmojis.push({ name: rows[i].emoji_name, hotness: rows.length - i });
-  }
-  usedEmojis.sort((a, b) => b.hotness - a.hotness);
-  updateUsedEmojiBtns(true);
-  
-  // Get pinned emojis
-  rows = await db.select('SELECT * FROM pinned_emojis');
-  for (const row of rows) {
-    const btn = getSourceButton(row.emoji_name);
-    if (btn) togglePinnedEmoji(btn, true);
-  }
-  
-  // Get settings
-  rows = await db.select('SELECT * FROM settings');
-  for (const row of rows) {
-    setSetting(row.name, row.value, true);
-  }
-  
-  highlightFirstEmojiBtn();
-  
-  // Get extra searchable texts
-  rows = await db.select('SELECT * FROM extra_searchable_texts');
-  for (const row of rows) {
-    extraSearchableTexts[row.emoji_name] = row.searchable_text;
-    for (let i=0; i<emojiBtns.length; ++i) {
-      if (emojiBtns[i].dataset.baseName === row.emoji_name) {
-        emojiBtns[i].dataset.searchableText = emojiBtns[i].dataset.searchableText + ' ' + CSS.escape(row.searchable_text);
-      }
-    }
-  }
-}
-
-loadStore();
 
 function parseIntSafe(val, minVal = 0) {
   if (!val) return 0;
@@ -189,7 +126,29 @@ function emojiNav(forward = true) {
   highlightFirstEmojiBtn();
 }
 
-function filterEmojis(e) {
+function dialogEmojiNav(forward = true) {
+  let newBtn = null;
+  if (!highlightedDialogBtn) {
+    if (dialogEmojiBtns.length) newBtn = dialogEmojiBtns[0];
+  } else {
+    for (let i=0; i<dialogEmojiBtns.length; ++i) {
+      if (dialogEmojiBtns[i] === highlightedDialogBtn) {
+        if (forward) {
+          if (i < dialogEmojiBtns.length - 1) newBtn = dialogEmojiBtns[i+1];
+        } else {
+          if (i > 0) newBtn = dialogEmojiBtns[i-1];
+        }
+      }
+    }
+  }
+  if (newBtn) {
+    if (highlightedDialogBtn) highlightedDialogBtn.classList.remove('selected');
+    highlightedDialogBtn = newBtn;
+    highlightedDialogBtn.classList.add('selected');
+  }
+}
+
+window.filterEmojis = function (e) {
   while (filterStyleSheet.cssRules.length) {
     filterStyleSheet.deleteRule(0);
   }
@@ -200,13 +159,20 @@ function filterEmojis(e) {
   highlightFirstEmojiBtn();
 }
 
-function clearFilterInput() {
+window.applyFilter = function (val) {
+  filterInput.value = val;
+  closeDialog();
+  filterInput.focus();
+  filterEmojis({ target: filterInput });
+}
+
+window.clearFilterInput = function () {
   filterInput.value = '';
   filterInput.focus();
   filterEmojis({ target: filterInput });
 }
 
-function handleEmojiBtnClick(e, btn) {
+window.handleEmojiBtnClick = function (e, btn) {
   if (btn.dataset.inDialog !== 'true') {
     if (highlightedBtn) highlightedBtn.classList.remove('selected');
     highlightBtn(btn);
@@ -232,13 +198,23 @@ function handleEmojiBtnClick(e, btn) {
 function handleKeydown(e) {
   switch (e.keyCode) {
     case 9: // Tab
-      if (!dialogOpen) {
+      if (dialogOpen) {
+        if (dialogMode === 'emoji') {
+          e.preventDefault();
+          dialogEmojiNav(!e.shiftKey);
+        }
+      } else {
         e.preventDefault();
         emojiNav(!e.shiftKey);
       }
       break;
     case 13: // Enter
-      if (!dialogOpen) {
+      if (dialogOpen) {
+        if (dialogMode === 'emoji') {
+          e.preventDefault();
+          if (highlightedDialogBtn) handleEmojiBtnClick(e, highlightedDialogBtn);
+        }
+      } else {
         e.preventDefault();
         if (highlightedBtn) handleEmojiBtnClick(e, highlightedBtn);
       }
@@ -306,16 +282,24 @@ function removeEmojiFromHistory(btn) {
       break;
     }
   }
-  db.execute('DELETE FROM used_emojis WHERE emoji_name=?;', [btn.title]);
+  if (db) db.execute('DELETE FROM used_emojis WHERE emoji_name=?;', [btn.title]);
 }
 
-function clearEmojiHistory() {
+window.clearEmojiHistory = function () {
+  document.getElementById('btn-clear-emoji-history').disabled = true;
   const usedEmojiBtns = filteredEmojisEl.querySelectorAll('.emoji-btn[data-used="true"]');
   for (const usedEmojiBtn of usedEmojiBtns) {
     if (usedEmojiBtn === highlightedBtn) emojiNav();
     usedEmojiBtn.remove();
   }
-  db.execute('DELETE FROM used_emojis WHERE emoji_name=?;', [btn.title]);
+  if (db) db.execute('DELETE FROM used_emojis;');
+  document.getElementById('svg-clear-history-clock').classList.add('hidden');
+  document.getElementById('svg-clear-history-check').classList.remove('hidden');
+  setTimeout(() => {
+    document.getElementById('svg-clear-history-check').classList.add('hidden');
+    document.getElementById('svg-clear-history-clock').classList.remove('hidden');
+    document.getElementById('btn-clear-emoji-history').disabled = false;
+  }, 3000);
 }
 
 function togglePinnedEmoji(sourceBtn, onLoad = false) {
@@ -355,27 +339,24 @@ async function savePinnedEmojisToDb() {
   }
 }
 
-function displayExtraSearchableText(extraSearchableText) {
-  document.getElementById('add-extra-searchable-text-btn').classList.toggle('hidden', extraSearchableText);
-  document.getElementById('dialog-emoji-extra-searchable-text').textContent = extraSearchableText;
-  document.getElementById('input-extra-searchable-text').value = extraSearchableText;
-}
-
-function showDialog(mode, btn = null) {
+window.showDialog = function (mode, btn = null) {
   dialogOpen = true;
   dialogMode = mode;
   const modeClassToAdd = 'dialog-'+mode;
   const modeClasses = ['dialog-emoji', 'dialog-help', 'dialog-settings'];
   document.body.classList.remove(...modeClasses.filter(x => x !== modeClassToAdd));
   document.body.classList.add(modeClassToAdd);
+  dialogEmojiBtns = [];
+  highlightedDialogBtn = null;
   if (mode === 'emoji') {
-    document.getElementById('dialog-emoji-title').textContent = btn.title;
+    document.getElementById('dialog-emoji-title').textContent = String(btn.title).charAt(0).toUpperCase() + String(btn.title).slice(1);
     document.getElementById('dialog-emoji-category').textContent = btn.dataset.category;
     document.getElementById('dialog-emoji-subcategory').textContent = btn.dataset.subcategory;
     const extraSearchableText = (extraSearchableTexts[btn.dataset.baseName] ?? '').trim();
     displayExtraSearchableText(extraSearchableText);
     const dialogEmojisEl = document.getElementById('dialog-emojis');
     dialogEmojisEl.textContent = '';
+    dialogEmojiBaseName = btn.dataset.baseName;
     const sourceBtn = getSourceButton(btn.title);
     let variantBtns = [];
     let foundBtn = false;
@@ -399,8 +380,12 @@ function showDialog(mode, btn = null) {
       newBtn.dataset.inDialog = 'true';
       newBtn.textContent = variantBtn.textContent;
       dialogEmojisEl.appendChild(newBtn);
+      dialogEmojiBtns.push(newBtn);
     }
+  } else {
+    dialogEmojiBaseName = null;
   }
+  dialogEmojiNav();
   dialog.show();
   setTimeout(() => {
     dialogBackdrop.removeAttribute('data-closed');
@@ -408,7 +393,46 @@ function showDialog(mode, btn = null) {
   }, 10);
 }
 
-function closeDialog() {
+function displayExtraSearchableText(extraSearchableText) {
+  document.getElementById('add-extra-searchable-text-btn').classList.toggle('hidden', extraSearchableText);
+  document.getElementById('dialog-emoji-extra-searchable-text').textContent = extraSearchableText;
+  document.getElementById('input-extra-searchable-text').value = extraSearchableText;
+}
+
+window.toggleExtraSearchableTextInput = function () {
+  const isHidden = document.getElementById('container-input-extra-searchable-text').classList.toggle('hidden');
+  if (!isHidden) document.getElementById('input-extra-searchable-text').focus();
+}
+
+window.updateExtraSearchableText = function () {
+  if (!dialogEmojiBaseName) return false;
+  clearTimeout(updateExtraSearchableTextTimeout);
+  updateExtraSearchableTextTimeout = setTimeout(async () => {
+    if (!db) return false;
+    const extraSearchableText = document.getElementById('input-extra-searchable-text').value.trim();
+    if (extraSearchableText) {
+      const result = await db.execute('UPDATE extra_searchable_texts SET searchable_text=? WHERE emoji_name=?', [extraSearchableText, dialogEmojiBaseName]);
+      if (!result.rowsAffected) {
+        await db.execute('INSERT INTO extra_searchable_texts (emoji_name, searchable_text) VALUES (?, ?);', [dialogEmojiBaseName, extraSearchableText]);
+      }
+    } else {
+      await db.execute('DELETE FROM extra_searchable_texts WHERE emoji_name=?', [dialogEmojiBaseName]);
+    }
+    displayExtraSearchableText(extraSearchableText);
+    for (let i=0; i<emojiBtns.length; ++i) {
+      if (emojiBtns[i].dataset.baseName === dialogEmojiBaseName) {
+        emojiBtns[i].dataset.searchableText = (
+          emojiBtns[i].title
+          + ' ' + emojiBtns[i].category
+          + ' ' + emojiBtns[i].subcategory
+          + (extraSearchableText ? ' ' + extraSearchableText : '')
+        ).toLowerCase();
+      }
+    }
+  }, 250);
+}
+
+window.closeDialog = function () {
   dialogOpen = false;
   dialogBackdrop.setAttribute('data-closed', 'true');
   dialogPanel.setAttribute('data-closed', 'true');
@@ -417,7 +441,7 @@ function closeDialog() {
   }, 160);
 }
 
-function setSetting(settingName, value, onLoad = false) {
+window.setSetting = function (settingName, value, onLoad = false) {
   
   // Parse certain values
   if (settingName === 'max_used_emojis') {
@@ -519,7 +543,82 @@ async function saveSettingToDb(settingName, value) {
   }
 }
 
+/**
+ * Initialize
+ */
+
+const settings = {
+  theme: 'system',
+  emoji_size: 'medium',
+  max_used_emojis: 10,
+  remember_used_emojis: true,
+  show_unsupported_emojis: false,
+  close_on_copy: true,
+  st1: 'false',
+  st2: 'false',
+  hair: 'false',
+  dir: 'false',
+};
+
+if ('emoji_size' in localStorage) setSetting('emoji_size', localStorage.emoji_size, true);
+if ('max_used_emojis' in localStorage) setSetting('max_used_emojis', parseIntSafe(localStorage.max_used_emojis), true);
+if ('close_on_copy' in localStorage) setSetting('close_on_copy', parseBooleanSafe(localStorage.close_on_copy), true);
+
+async function loadStore() {
+  
+  db = await Database.load('sqlite:clemoji.db');
+  if (!db) {
+    alert('Error: could not load database.')
+    return false;
+  }
+  let rows;
+  
+  // Get used emojis
+  rows = await db.select('SELECT rowid, * FROM used_emojis ORDER BY rowid DESC LIMIT 100');
+  rowLoop: for (let i=0; i<rows.length; ++i) {
+    for (let j=0; j<usedEmojis.length; ++j) {
+      if (usedEmojis[j].name === rows[i].emoji_name) {
+        usedEmojis[j].hotness += rows.length - i;
+        continue rowLoop;
+      }
+    }
+    usedEmojis.push({ name: rows[i].emoji_name, hotness: rows.length - i });
+  }
+  usedEmojis.sort((a, b) => b.hotness - a.hotness);
+  updateUsedEmojiBtns(true);
+  
+  // Get pinned emojis
+  rows = await db.select('SELECT * FROM pinned_emojis');
+  for (const row of rows) {
+    const btn = getSourceButton(row.emoji_name);
+    if (btn) togglePinnedEmoji(btn, true);
+  }
+  
+  // Get settings
+  rows = await db.select('SELECT * FROM settings');
+  for (const row of rows) {
+    setSetting(row.name, row.value, true);
+  }
+  
+  highlightFirstEmojiBtn();
+  
+  // Get extra searchable texts
+  rows = await db.select('SELECT * FROM extra_searchable_texts');
+  for (const row of rows) {
+    extraSearchableTexts[row.emoji_name] = row.searchable_text;
+    for (let i=0; i<emojiBtns.length; ++i) {
+      if (emojiBtns[i].dataset.baseName === row.emoji_name) {
+        emojiBtns[i].dataset.searchableText = emojiBtns[i].dataset.searchableText + ' ' + CSS.escape(row.searchable_text);
+      }
+    }
+  }
+}
+
+loadStore();
+
 window.addEventListener("DOMContentLoaded", () => {
+  
+  filterInput.focus();
   
   window.addEventListener('keydown', handleKeydown);
   
@@ -553,11 +652,5 @@ window.addEventListener("DOMContentLoaded", () => {
     }
     el.remove();
   }, 10);
-  
-  // TODO remove
-  setTimeout(() => {
-    const btn = getSourceButton('person: medium skin tone, white hair');
-    showDialog('emoji', btn);
-  }, 1000);
   
 });

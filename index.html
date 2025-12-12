@@ -15,11 +15,7 @@
         }
     </script>
     
-    <script type="module">
-        import copy from '/node_modules/copy-text-to-clipboard/index.js';
-        window.copy = copy;
-    </script>
-    <script src="/src/main.js" defer></script>
+    <script type="module" src="/src/main.js" defer></script>
     
 </head>
 
@@ -4037,13 +4033,24 @@
                             
                             <div class="dialog-emoji-content">
                                 
-                                <div class="-mt-3">
-                                    <span id="dialog-emoji-category"></span>
+                                <div class="-mt-3 text-sm font-semibold">
+                                    <button type="button" id="dialog-emoji-category" onclick="applyFilter(event.target.textContent)" class="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100 cursor-pointer hover:underline"></button>
                                     <span class="text-gray-500 dark:text-gray-400">/</span>
-                                    <span id="dialog-emoji-subcategory"></span>
+                                    <button type="button" id="dialog-emoji-subcategory" onclick="applyFilter(event.target.textContent)" class="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100 cursor-pointer hover:underline"></button>
                                     <span class="text-gray-500 dark:text-gray-400">/</span>
-                                    <button type="button" id="add-extra-searchable-text-btn" class="cursor-pointer text-blue-300 hover:text-blue-600 transition-colors dark:text-blue-300">[add searchable text]</button>
-                                    <span id="dialog-emoji-extra-searchable-text"></span>
+                                    <button type="button" id="add-extra-searchable-text-btn" class="cursor-pointer text-blue-300 hover:text-blue-600 transition-colors dark:text-blue-600 dark:hover:text-blue-400" onclick="toggleExtraSearchableTextInput()" title="Show custom searchable text input">[add searchable text]</button>
+                                    <button type="button" id="dialog-emoji-extra-searchable-text" onclick="toggleExtraSearchableTextInput()" class="cursor-pointer hover:underline text-blue-600 hover:text-blue-800 dark:text-blue-200 dark:hover:text-blue-100" title="Show custom searchable text input"></button>
+                                </div>
+                                
+                                <div id="container-input-extra-searchable-text" class="mt-2 flex gap-2 items-center hidden">
+                                    <div class="grow">
+                                        <input type="text" id="input-extra-searchable-text" oninput="updateExtraSearchableText()" onkeydown="if (event.keyCode == 13) { toggleExtraSearchableTextInput(); }" placeholder="Custom search text" class="block w-full rounded-md bg-white dark:bg-gray-800 px-3 py-1.5 text-base text-black dark:text-gray-100 outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-0 focus-visible:-outline-offset-2 focus-visible:outline-indigo-500 sm:text-sm/6" />
+                                    </div>
+                                    <div class="shrink-0">
+                                        <button type="button" onclick="toggleExtraSearchableTextInput()" class="cursor-pointer text-gray-700 dark:text-gray-300 flex items-center justify-center size-10">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-icon lucide-check"><path d="M20 6 9 17l-5-5"/></svg>
+                                        </button>
+                                    </div>
                                 </div>
                                 
                                 <div id="dialog-emojis" class="flex flex-wrap items-start justify-center gap-2 mt-5"></div>
@@ -4173,7 +4180,7 @@
                                 
                                 <div class="mt-3">
                                     <p class="mt-3 text-sm">
-                                        App version: 0.1.0
+                                        App version: 0.1.1
                                     </p>
 
                                     <p class="mt-3 text-sm">
@@ -4242,8 +4249,9 @@
                                     </div>
                                     
                                     <div>
-                                        <button type="button" onclick="clearEmojiHistory()" class="flex items-center justify-center h-10 gap-2 px-4 text-sm font-semibold bg-gray-200 rounded-md cursor-pointer darK:text-gray-100 dark:bg-gray-700 shrink-0 whitespace-nowrap">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock-icon lucide-clock size-4"><path d="M12 6v6l4 2"/><circle cx="12" cy="12" r="10"/></svg>
+                                        <button type="button" id="btn-clear-emoji-history" onclick="clearEmojiHistory()" class="flex items-center justify-center h-10 gap-2 px-4 text-sm font-semibold bg-gray-200 rounded-md cursor-pointer dark:text-gray-100 dark:bg-gray-700 shrink-0 whitespace-nowrap disabled:opacity-40 disabled:cursor-default">
+                                            <svg id="svg-clear-history-clock" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock-icon lucide-clock size-4"><path d="M12 6v6l4 2"/><circle cx="12" cy="12" r="10"/></svg>
+                                            <svg id="svg-clear-history-check" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-check-big-icon lucide-circle-check-big size-4 hidden"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg>
                                             Clear History
                                         </button>
                                     </div>
@@ -4301,7 +4309,9 @@
                                     
                                 </div>
                                 
-                                <div id="sample-emojis" class="flex flex-wrap gap-4 mt-6">
+                                <div id="sample-emojis" class="flex flex-wrap items-center gap-4 mt-6">
+                                    
+                                    <span>Samples: </span>
                                     
                                     <div class="sample-emoji" title="smiling face with sunglasses">😎</div>
                                     
@@ -4399,10 +4409,6 @@
                                 
                             </div>
                             
-                        </div>
-                        
-                        <div class="dialog-emoji-content px-4 py-2">
-                            <input type="text" id="input-extra-searchable-text" oninput="updateExtraSearchableText()" placeholder="Custom search text" class="block w-full rounded-md bg-white dark:bg-gray-800 px-3 py-1.5 text-base text-black dark:text-gray-100 outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-0 focus-visible:-outline-offset-2 focus-visible:outline-indigo-500 sm:text-sm/6" />
                         </div>
                         
                     </div>
