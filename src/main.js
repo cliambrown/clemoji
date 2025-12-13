@@ -1,5 +1,3 @@
-// TODO load all used emoji btns, just hide the extras
-
 import copy from '/node_modules/copy-text-to-clipboard/index.js';
 import Database from '@tauri-apps/plugin-sql';
 import { exit } from '@tauri-apps/plugin-process';
@@ -54,7 +52,7 @@ async function storeState() {
   let queryText = 'DELETE FROM pinned_emojis; DELETE FROM used_emojis;';
   let queryParams = [];
   let emojisToPrepend = [];
-  let usedEmojisSorted = [];
+  usedEmojisSorted = [];
   for (i=0; i<emojiBtns.length; ++i) {
     if (emojiBtns[i].dataset.pinned !== 'true') break;
     queryText +=' INSERT INTO pinned_emojis (emoji_name) VALUES (?);';
@@ -73,8 +71,7 @@ async function storeState() {
     usedEmojisSorted.push({ name: usedEmojiNames[i], hotness: i });
   }
   usedEmojisSorted.sort((a, b) => b.hotness - a.hotness);
-  const maxUsedEmojiBtns = Math.min(settings.max_used_emojis, usedEmojisSorted.length);
-  for (i=0; i<maxUsedEmojiBtns; ++i) {
+  for (i=0; i<usedEmojisSorted.length; ++i) {
     emojisToPrepend.push({ name: usedEmojisSorted[i].name, used: true });
   }
   localStorage.emojis_to_prepend = JSON.stringify(emojisToPrepend);
@@ -86,54 +83,13 @@ async function close() {
   exit(0);
 }
 
-// Insert emoji history buttons on load, or change the number of displayed buttons when
-// settings.max_used_emojis value changes
-function updateUsedEmojiBtns(onLoad = false) {
-  
-  // TODO onLoad no longer needed here
-  // TODO just load all buttons and show/hide with css
-  
-  const maxUsedEmojiBtns = Math.min(settings.max_used_emojis, usedEmojisSorted.length);
-  let pinnedEmojiBtnCount = 0;
-  let usedEmojiBtnCount = 0;
-  let insertBeforeBtn = null;
-  let i;
-  
-  if (!onLoad) {
-    for (i=0; i<emojiBtns.length; ++i) {
-      if (emojiBtns[i].dataset.pinned === 'true') {
-        ++pinnedEmojiBtnCount;
-      } else if (emojiBtns[i].dataset.used === 'true') {
-        ++usedEmojiBtnCount;
-      } else {
-        insertBeforeBtn = emojiBtns[i];
-        break;
-      }
-    }
+// Change the number of displayed buttons when settings.max_used_emojis value changes
+function enforceMaxUsedEmojis(onLoad) {
+  for (let i=1; i<=50; ++i) {
+    document.body.classList.toggle('show-used-emoji-'+i, i <= settings.max_used_emojis);
   }
-  
-  if (usedEmojiBtnCount < maxUsedEmojiBtns) {
-    let insertAfterBtn = null;
-    for (i=usedEmojiBtnCount; i<maxUsedEmojiBtns; ++i) {
-      const sourceBtn = getSourceButton(usedEmojisSorted[i].name);
-      if (sourceBtn) {
-        const btn = sourceBtn.cloneNode();
-        btn.dataset.used = 'true';
-        btn.textContent = sourceBtn.textContent;
-        if (insertAfterBtn) insertAfterBtn.insertAdjacentElement('afterend', btn);
-        else if (insertBeforeBtn) insertBeforeBtn.insertAdjacentElement('beforebegin', btn);
-        else filteredEmojisEl.prepend(btn);
-        insertAfterBtn = btn;
-      }
-    }
-  } else if (usedEmojiBtnCount > maxUsedEmojiBtns) {
-    while (emojiBtns[pinnedEmojiBtnCount + maxUsedEmojiBtns].dataset.used === 'true') {
-      if (emojiBtns[pinnedEmojiBtnCount + maxUsedEmojiBtns] === highlightedBtn) emojiNav();
-      emojiBtns[pinnedEmojiBtnCount + maxUsedEmojiBtns].remove();
-    }
-  }
-  
-  storeState();
+  if (highlightedBtn && !highlightedBtn.checkVisibility()) emojiNav();
+  if (!onLoad) storeState();
 }
 
 function highlightBtn(btn) {
@@ -309,10 +265,13 @@ function addEmojiToHistory(btn) {
 function removeEmojiFromHistory(btn) {
   if (btn.dataset.used === 'true') emojiNav();
   const usedEmojiBtns = filteredEmojisEl.querySelectorAll('.emoji-btn[data-used="true"]');
-  for (const usedEmojiBtn of usedEmojiBtns) {
-    if (usedEmojiBtn.title === btn.title) {
-      usedEmojiBtn.remove();
-      break;
+  let usedEmojiNumber = usedEmojiBtns.length;
+  for (let i=usedEmojiBtns.length; i>=0; --i) {
+    if (usedEmojiBtns[i].title === btn.title) {
+      usedEmojiBtns[i].remove();
+    } else {
+      usedEmojiBtns[i].dataset.usedEmojiNumber = ''+usedEmojiNumber;
+      --usedEmojiNumber;
     }
   }
   usedEmojiNames = usedEmojiNames.filter(emojiName => emojiName !== btn.title);
@@ -322,9 +281,9 @@ function removeEmojiFromHistory(btn) {
 window.clearEmojiHistory = function () {
   document.getElementById('btn-clear-emoji-history').disabled = true;
   const usedEmojiBtns = filteredEmojisEl.querySelectorAll('.emoji-btn[data-used="true"]');
-  for (const usedEmojiBtn of usedEmojiBtns) {
-    if (usedEmojiBtn === highlightedBtn) emojiNav();
-    usedEmojiBtn.remove();
+  for (let i=usedEmojiBtns.length-1; i>=0; --i) {
+    if (usedEmojiBtns[i] === highlightedBtn) emojiNav();
+    usedEmojiBtns[i].remove();
   }
   if (db) db.execute('DELETE FROM used_emojis');
   document.getElementById('svg-clear-history-clock').classList.add('hidden');
@@ -362,6 +321,7 @@ function togglePinnedEmoji(sourceBtn, onLoad = false) {
   btn.classList.remove('selected');
   btn.dataset.pinned = 'true';
   btn.removeAttribute('data-used');
+  btn.removeAttribute('data-used-emoji-number');
   btn.textContent = sourceBtn.textContent;
   filteredEmojisEl.prepend(btn);
   if (!onLoad) storeState();
@@ -405,6 +365,7 @@ window.showDialog = function (mode, btn = null) {
       newBtn.classList.remove('selected');
       newBtn.removeAttribute('data-pinned');
       newBtn.removeAttribute('data-used');
+      newBtn.removeAttribute('data-used-emoji-number');
       newBtn.dataset.inDialog = 'true';
       newBtn.textContent = variantBtn.textContent;
       dialogEmojisEl.appendChild(newBtn);
@@ -443,8 +404,10 @@ window.updateExtraSearchableText = function () {
       if (!result.rowsAffected) {
         await db.execute('INSERT INTO extra_searchable_texts (emoji_name, searchable_text) VALUES (?, ?)', [dialogEmojiBaseName, extraSearchableText]);
       }
+      extraSearchableTexts[dialogEmojiBaseName] = extraSearchableText;
     } else {
       await db.execute('DELETE FROM extra_searchable_texts WHERE emoji_name=?', [dialogEmojiBaseName]);
+      delete extraSearchableTexts.dialogEmojiBaseName;
     }
     displayExtraSearchableText(extraSearchableText);
     for (let i=0; i<emojiBtns.length; ++i) {
@@ -501,7 +464,7 @@ window.setSetting = function (settingName, value, onLoad = false) {
     }
     localStorage.emoji_size = value;
   } else if (settingName === 'max_used_emojis') { // Max Used Emojis
-    if (value != oldValue) updateUsedEmojiBtns(onLoad);
+    if (value != oldValue) enforceMaxUsedEmojis(onLoad);
     localStorage.max_used_emojis = value;
   } else if (settingName === 'show_unsupported_emojis') { // Show unsupported
     document.body.classList.toggle('hide-unsupported', !value);
@@ -589,8 +552,8 @@ const settings = {
 };
 
 if ('emoji_size' in localStorage) setSetting('emoji_size', localStorage.emoji_size, true);
-if ('max_used_emojis' in localStorage) setSetting('max_used_emojis', parseIntSafe(localStorage.max_used_emojis), true);
-if ('close_on_copy' in localStorage) setSetting('close_on_copy', parseBooleanSafe(localStorage.close_on_copy), true);
+if ('max_used_emojis' in localStorage) setSetting('max_used_emojis', localStorage.max_used_emojis, true);
+if ('close_on_copy' in localStorage) setSetting('close_on_copy', localStorage.close_on_copy, true);
 if ('emojis_to_prepend' in localStorage) {
   let emojisToPrepend = [];
   try {
@@ -599,14 +562,23 @@ if ('emojis_to_prepend' in localStorage) {
     console.log(e);
   }
   if (emojisToPrepend) {
-    for (let i=emojisToPrepend.length - 1; i>=0; --i) {
+    let usedEmojiNumber = 1;
+    let previouslyPrependedEl = null;
+    for (let i=0; i<emojisToPrepend.length; ++i) {
       const sourceBtn = getSourceButton(emojisToPrepend[i].name);
       if (sourceBtn) {
         const btn = sourceBtn.cloneNode();
-        if (emojisToPrepend[i].used) btn.dataset.used = 'true';
-        else btn.dataset.pinned = 'true';
+        if (emojisToPrepend[i].used) {
+          btn.dataset.used = 'true';
+          btn.dataset.usedEmojiNumber = ''+usedEmojiNumber;
+          ++usedEmojiNumber;
+        } else {
+          btn.dataset.pinned = 'true';
+        }
         btn.textContent = sourceBtn.textContent;
-        filteredEmojisEl.prepend(btn);
+        if (previouslyPrependedEl) previouslyPrependedEl.insertAdjacentElement('afterend', btn);
+        else filteredEmojisEl.prepend(btn);
+        previouslyPrependedEl = btn;
       }
     }
   }
@@ -621,35 +593,14 @@ async function loadStore() {
     alert('Error: could not load database.')
     return false;
   }
+  
   let rows;
-  
-  // TODO check localstorage data against db
-  
-  // Get used emojis
-  // rows = await db.select('SELECT SUM(rowid) as hotness, emoji_name FROM used_emojis GROUP BY emoji_name ORDER BY hotness DESC LIMIT 100');
-  // for (const row of rows) {
-  //   usedEmojisSorted.push({ name: row.emoji_name });
-  // }
-  rows = await db.select('SELECT emoji_name FROM used_emojis LIMIT 100');
-  for (const row of rows) {
-    usedEmojiNames.push(row.emoji_name);
-  }
-  // updateUsedEmojiBtns(true);
-  
-  // Get pinned emojis
-  // rows = await db.select('SELECT * FROM pinned_emojis');
-  // for (const row of rows) {
-    // const btn = getSourceButton(row.emoji_name);
-    // if (btn) togglePinnedEmoji(btn, true);
-  // }
   
   // Get settings
   rows = await db.select('SELECT * FROM settings');
   for (const row of rows) {
     setSetting(row.name, row.value, true);
   }
-  
-  highlightFirstEmojiBtn();
   
   // Get extra searchable texts
   rows = await db.select('SELECT * FROM extra_searchable_texts');
@@ -661,6 +612,38 @@ async function loadStore() {
       }
     }
   }
+  
+  // Get used emojis
+  rows = await db.select('SELECT rowid, emoji_name FROM used_emojis ORDER BY rowid ASC');
+  for (const row of rows) {
+    usedEmojiNames.push(row.emoji_name);
+  }
+  
+  // Get pinned emojis from db & check against data loaded from localStorage
+  rows = await db.select('SELECT rowid, emoji_name FROM pinned_emojis ORDER BY rowid ASC');
+  let foundWrongPinned = false;
+  let pinnedCount = 0;
+  for (let i=0; i<emojiBtns.length; ++i) {
+    if (emojiBtns[i].dataset.pinned !== 'true') break;
+    if (emojiBtns[i].title !== rows[pinnedCount].emoji_name) {
+      foundWrongPinned = true;
+      break;
+    }
+    ++pinnedCount;
+    if (pinnedCount > rows.length - 1) break;
+  }
+  if (foundWrongPinned || pinnedCount != rows.length) {
+    while (emojiBtns[0].dataset.pinned === 'true') {
+      emojiBtns[0].remove();
+    }
+    for (let i=rows.length-1; i>=0; --i) {
+      const btn = getSourceButton(rows[i].emoji_name);
+      if (btn) togglePinnedEmoji(btn, true);
+    }
+    await storeState();
+  }
+  
+  highlightFirstEmojiBtn();
 }
 
 loadStore();

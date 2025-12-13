@@ -49,7 +49,6 @@ body.emoji_size-large .emoji-btn:not(.selected-emoji-btn) { @apply text-6xl; }
 }
 
 /* Hide emojis */
-/* #filtered-emojis .emoji-btn[data-filtered="true"], */
 .hide-unsupported #filtered-emojis .emoji-btn[data-unsupported="true"],
 
 /* Skin Tone 1 */
@@ -282,16 +281,67 @@ body.emoji_size-large .emoji-btn:not(.selected-emoji-btn) { @apply text-6xl; }
 .dir-false #filtered-emojis .emoji-btn:not([data-pinned="true"]):not([data-used="true"])[data-dir="right"],
 .dir-false #sample-emojis .sample-emoji[data-dir="right"],
 .dir-right #filtered-emojis .emoji-btn:not([data-pinned="true"]):not([data-used="true"])[data-dir="false"],
-.dir-right #sample-emojis .sample-emoji[data-dir="false"]
-{
-    @apply hidden;
-}
+.dir-right #sample-emojis .sample-emoji[data-dir="false"],
 
+/* Max Used Emojis  */
+body:not(.show-used-emoji-1) #filtered-emojis .emoji-btn[data-used-emoji-number="1"],
+body:not(.show-used-emoji-2) #filtered-emojis .emoji-btn[data-used-emoji-number="2"],
+body:not(.show-used-emoji-3) #filtered-emojis .emoji-btn[data-used-emoji-number="3"],
+body:not(.show-used-emoji-4) #filtered-emojis .emoji-btn[data-used-emoji-number="4"],
+body:not(.show-used-emoji-5) #filtered-emojis .emoji-btn[data-used-emoji-number="5"],
+body:not(.show-used-emoji-6) #filtered-emojis .emoji-btn[data-used-emoji-number="6"],
+body:not(.show-used-emoji-7) #filtered-emojis .emoji-btn[data-used-emoji-number="7"],
+body:not(.show-used-emoji-8) #filtered-emojis .emoji-btn[data-used-emoji-number="8"],
+body:not(.show-used-emoji-9) #filtered-emojis .emoji-btn[data-used-emoji-number="9"],
+body:not(.show-used-emoji-10) #filtered-emojis .emoji-btn[data-used-emoji-number="10"],
+body:not(.show-used-emoji-11) #filtered-emojis .emoji-btn[data-used-emoji-number="11"],
+body:not(.show-used-emoji-12) #filtered-emojis .emoji-btn[data-used-emoji-number="12"],
+body:not(.show-used-emoji-13) #filtered-emojis .emoji-btn[data-used-emoji-number="13"],
+body:not(.show-used-emoji-14) #filtered-emojis .emoji-btn[data-used-emoji-number="14"],
+body:not(.show-used-emoji-15) #filtered-emojis .emoji-btn[data-used-emoji-number="15"],
+body:not(.show-used-emoji-16) #filtered-emojis .emoji-btn[data-used-emoji-number="16"],
+body:not(.show-used-emoji-17) #filtered-emojis .emoji-btn[data-used-emoji-number="17"],
+body:not(.show-used-emoji-18) #filtered-emojis .emoji-btn[data-used-emoji-number="18"],
+body:not(.show-used-emoji-19) #filtered-emojis .emoji-btn[data-used-emoji-number="19"],
+body:not(.show-used-emoji-20) #filtered-emojis .emoji-btn[data-used-emoji-number="20"],
+body:not(.show-used-emoji-21) #filtered-emojis .emoji-btn[data-used-emoji-number="21"],
+body:not(.show-used-emoji-22) #filtered-emojis .emoji-btn[data-used-emoji-number="22"],
+body:not(.show-used-emoji-23) #filtered-emojis .emoji-btn[data-used-emoji-number="23"],
+body:not(.show-used-emoji-24) #filtered-emojis .emoji-btn[data-used-emoji-number="24"],
+body:not(.show-used-emoji-25) #filtered-emojis .emoji-btn[data-used-emoji-number="25"],
+body:not(.show-used-emoji-26) #filtered-emojis .emoji-btn[data-used-emoji-number="26"],
+body:not(.show-used-emoji-27) #filtered-emojis .emoji-btn[data-used-emoji-number="27"],
+body:not(.show-used-emoji-28) #filtered-emojis .emoji-btn[data-used-emoji-number="28"],
+body:not(.show-used-emoji-29) #filtered-emojis .emoji-btn[data-used-emoji-number="29"],
+body:not(.show-used-emoji-30) #filtered-emojis .emoji-btn[data-used-emoji-number="30"],
+body:not(.show-used-emoji-31) #filtered-emojis .emoji-btn[data-used-emoji-number="31"],
+body:not(.show-used-emoji-32) #filtered-emojis .emoji-btn[data-used-emoji-number="32"],
+body:not(.show-used-emoji-33) #filtered-emojis .emoji-btn[data-used-emoji-number="33"],
+body:not(.show-used-emoji-34) #filtered-emojis .emoji-btn[data-used-emoji-number="34"],
+body:not(.show-used-emoji-35) #filtered-emojis .emoji-btn[data-used-emoji-number="35"],
+body:not(.show-used-emoji-36) #filtered-emojis .emoji-btn[data-used-emoji-number="36"],
+body:not(.show-used-emoji-37) #filtered-emojis .emoji-btn[data-used-emoji-number="37"],
+body:not(.show-used-emoji-38) #filtered-emojis .emoji-btn[data-used-emoji-number="38"],
+body:not(.show-used-emoji-39) #filtered-emojis .emoji-btn[data-used-emoji-number="39"],
+body:not(.show-used-emoji-40) #filtered-emojis .emoji-btn[data-used-emoji-number="40"],
+body:not(.show-used-emoji-41) #filtered-emojis .emoji-btn[data-used-emoji-number="41"],
+body:not(.show-used-emoji-42) #filtered-emojis .emoji-btn[data-used-emoji-number="42"],
+body:not(.show-used-emoji-43) #filtered-emojis .emoji-btn[data-used-emoji-number="43"],
+body:not(.show-used-emoji-44) #filtered-emojis .emoji-btn[data-used-emoji-number="44"],
+body:not(.show-used-emoji-45) #filtered-emojis .emoji-btn[data-used-emoji-number="45"],
+body:not(.show-used-emoji-46) #filtered-emojis .emoji-btn[data-used-emoji-number="46"],
+body:not(.show-used-emoji-47) #filtered-emojis .emoji-btn[data-used-emoji-number="47"],
+body:not(.show-used-emoji-48) #filtered-emojis .emoji-btn[data-used-emoji-number="48"],
+body:not(.show-used-emoji-49) #filtered-emojis .emoji-btn[data-used-emoji-number="49"],
+body:not(.show-used-emoji-50) #filtered-emojis .emoji-btn[data-used-emoji-number="50"],
+
+/* Dialogs */
 .dialog-emoji .dialog-help-content,
 .dialog-emoji .dialog-settings-content,
 .dialog-help .dialog-emoji-content,
 .dialog-help .dialog-settings-content,
 .dialog-settings .dialog-emoji-content,
-.dialog-settings .dialog-help-content {
+.dialog-settings .dialog-help-content
+{
     @apply hidden;
 }
