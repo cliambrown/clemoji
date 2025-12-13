@@ -12,7 +12,7 @@
 .emoji-btn {
     @apply relative flex items-center justify-center p-1 rounded-md cursor-pointer focus:outline-none min-w-10 min-h-10;
     scroll-margin-top: 4rem;
-    scroll-margin-bottom: 12rem;
+    scroll-margin-bottom: 4rem;
 }
 
 body.emoji_size-small .emoji-btn:not(.selected-emoji-btn) { @apply text-lg; }

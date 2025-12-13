@@ -1,6 +1,6 @@
 [package]
 name = "clemoji"
-version = "0.1.1"
+version = "0.1.2"
 description = "An emoji picker"
 authors = ["C. Liam Brown"]
 edition = "2021"
