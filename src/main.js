@@ -2,12 +2,18 @@ import copy from '/node_modules/copy-text-to-clipboard/index.js';
 import Database from '@tauri-apps/plugin-sql';
 import { exit } from '@tauri-apps/plugin-process';
 
+/**
+ * Variables
+ */
+
 let db;
 let usedEmojiNames = []; // oldest first
 let usedEmojisSorted = []; // hottest (most / recently used) first
+let emojiBtnsByName = {};
 let highlightedBtn = null;
 let selectedEmojis = [];
 let extraSearchableTexts = {};
+let unsupportedEmojiNames = null;
 
 let dialogOpen = false;
 let dialogMode = 'emoji';
@@ -23,9 +29,30 @@ const selectedEmojisEl = document.getElementById('selected-emojis');
 const selectedEmojiModelBtn = document.getElementById('selected-emoji-model-btn');
 const emojiBtns = filteredEmojisEl.getElementsByClassName('emoji-btn');
 
+for (let i=0; i<emojiBtns.length; ++i) {
+  emojiBtnsByName[emojiBtns[i].title] = emojiBtns[i];
+}
+
 const dialog = document.getElementById('dialog');
 const dialogBackdrop = document.getElementById('dialog-backdrop');
 const dialogPanel = document.getElementById('dialog-panel');
+
+const settings = {
+  theme: 'system',
+  emoji_size: 'medium',
+  max_used_emojis: 10,
+  remember_used_emojis: true,
+  show_unsupported_emojis: false,
+  close_on_copy: true,
+  st1: 'false',
+  st2: 'false',
+  hair: 'false',
+  dir: 'false',
+};
+
+/**
+ * Functions
+ */
 
 function parseIntSafe(val, minVal = 0) {
   if (!val) return 0;
@@ -36,15 +63,6 @@ function parseIntSafe(val, minVal = 0) {
 
 function parseBooleanSafe(val) {
   return !(!val || val === 'false');
-}
-
-function getSourceButton(emojiName) {
-  for (let i=0; i<emojiBtns.length; ++i) {
-    if (emojiBtns[i].dataset.pinned !== 'true' && emojiBtns[i].dataset.used !== 'true' && emojiBtns[i].title === emojiName) {
-      return emojiBtns[i];
-    }
-  }
-  return null;
 }
 
 async function storeState() {
@@ -83,7 +101,7 @@ async function close() {
   exit(0);
 }
 
-// Change the number of displayed buttons when settings.max_used_emojis value changes
+// Change the number of displayed buttons according to settings.max_used_emojis value
 function enforceMaxUsedEmojis(onLoad) {
   for (let i=1; i<=50; ++i) {
     document.body.classList.toggle('show-used-emoji-'+i, i <= settings.max_used_emojis);
@@ -345,7 +363,6 @@ window.showDialog = function (mode, btn = null) {
     const dialogEmojisEl = document.getElementById('dialog-emojis');
     dialogEmojisEl.textContent = '';
     dialogEmojiBaseName = btn.dataset.baseName;
-    const sourceBtn = getSourceButton(btn.title);
     let variantBtns = [];
     let foundBtn = false;
     for (let i=0; i<emojiBtns.length; ++i) {
@@ -357,6 +374,7 @@ window.showDialog = function (mode, btn = null) {
         break;
       }
     }
+    const sourceBtn = emojiBtnsByName[btn.title];
     variantBtns.unshift(sourceBtn);
     for (let i=0; i<variantBtns.length; ++i) {
       const variantBtn = variantBtns[i];
@@ -538,22 +556,23 @@ async function saveSettingToDb(settingName, value) {
  * Initialize
  */
 
-const settings = {
-  theme: 'system',
-  emoji_size: 'medium',
-  max_used_emojis: 10,
-  remember_used_emojis: true,
-  show_unsupported_emojis: false,
-  close_on_copy: true,
-  st1: 'false',
-  st2: 'false',
-  hair: 'false',
-  dir: 'false',
-};
-
 if ('emoji_size' in localStorage) setSetting('emoji_size', localStorage.emoji_size, true);
 if ('max_used_emojis' in localStorage) setSetting('max_used_emojis', localStorage.max_used_emojis, true);
 if ('close_on_copy' in localStorage) setSetting('close_on_copy', localStorage.close_on_copy, true);
+if ('unsupported_emoji_names' in localStorage) {
+  try {
+    unsupportedEmojiNames = JSON.parse(localStorage.unsupported_emoji_names);
+  } catch (e) {
+    console.log(e);
+  }
+  if (Array.isArray(unsupportedEmojiNames)) {
+    for (let i=0; i<unsupportedEmojiNames.length; ++i) {
+      if (emojiBtnsByName[unsupportedEmojiNames[i]]) emojiBtnsByName[unsupportedEmojiNames[i]].dataset.unsupported = 'true';
+    }
+  } else {
+    unsupportedEmojiNames = [];
+  }
+}
 if ('emojis_to_prepend' in localStorage) {
   let emojisToPrepend = [];
   try {
@@ -565,9 +584,8 @@ if ('emojis_to_prepend' in localStorage) {
     let usedEmojiNumber = 1;
     let previouslyPrependedEl = null;
     for (let i=0; i<emojisToPrepend.length; ++i) {
-      const sourceBtn = getSourceButton(emojisToPrepend[i].name);
-      if (sourceBtn) {
-        const btn = sourceBtn.cloneNode();
+      if (emojiBtnsByName[emojisToPrepend[i].name]) {
+        const btn = emojiBtnsByName[emojisToPrepend[i].name].cloneNode();
         if (emojisToPrepend[i].used) {
           btn.dataset.used = 'true';
           btn.dataset.usedEmojiNumber = ''+usedEmojiNumber;
@@ -575,7 +593,7 @@ if ('emojis_to_prepend' in localStorage) {
         } else {
           btn.dataset.pinned = 'true';
         }
-        btn.textContent = sourceBtn.textContent;
+        btn.textContent = emojiBtnsByName[emojisToPrepend[i].name].textContent;
         if (previouslyPrependedEl) previouslyPrependedEl.insertAdjacentElement('afterend', btn);
         else filteredEmojisEl.prepend(btn);
         previouslyPrependedEl = btn;
@@ -637,8 +655,7 @@ async function loadStore() {
       emojiBtns[0].remove();
     }
     for (let i=rows.length-1; i>=0; --i) {
-      const btn = getSourceButton(rows[i].emoji_name);
-      if (btn) togglePinnedEmoji(btn, true);
+      if (emojiBtnsByName[rows[i].emoji_name]) togglePinnedEmoji(emojiBtnsByName[rows[i].emoji_name], true);
     }
     await storeState();
   }
@@ -654,35 +671,57 @@ window.addEventListener("DOMContentLoaded", () => {
   
   window.addEventListener('keydown', handleKeydown);
   
-  setTimeout(() => {
-    // Use size comparison to detect unsupported emojis
-    const el = document.createElement('span');
-    el.style = "position:absolute;visibility:hidden;";
-    el.textContent = '☺️';
-    document.body.appendChild(el);
-    let elSize = el.getBoundingClientRect();
-    const compareW = elSize.width;
-    const compareH = elSize.height;
-    let btn;
-    let codes;
-    let supported;
-    let emoji;
-    for (let i=0; i<emojiBtns.length; ++i) {
-      btn = emojiBtns[i];
-      el.textContent = btn.textContent;
-      elSize = el.getBoundingClientRect();
-      supported = (elSize.width === compareW && elSize.height === compareH);
-      if (!supported) {
-        codes = btn.dataset.code.split(',').map(x => parseInt('0x'+x));
-        emoji = String.fromCodePoint(...codes);
-        el.textContent = emoji;
+  let lastEmojiSupportCheck = null;
+  let timeSinceLastCheck = null;
+  if ('last_emoji_support_check' in localStorage) {
+    lastEmojiSupportCheck = parseIntSafe(localStorage.last_emoji_support_check);
+    if (lastEmojiSupportCheck) timeSinceLastCheck = Date.now() - lastEmojiSupportCheck;
+  }
+  
+  // Check all emojis every eight weeks
+  const checkAll = !lastEmojiSupportCheck || (timeSinceLastCheck && timeSinceLastCheck > 4838400000);
+  // Check previously unsupported emojis every two weeks
+  const checkUnsupported = !checkAll && unsupportedEmojiNames.length && timeSinceLastCheck && timeSinceLastCheck > 1209600000;
+  
+  if (checkAll || checkUnsupported) {
+    setTimeout(() => {
+      // Use size comparison to detect unsupported emojis
+      const el = document.createElement('span');
+      el.style = "position:absolute;visibility:hidden;";
+      el.textContent = '☺️';
+      document.body.appendChild(el);
+      let elSize = el.getBoundingClientRect();
+      const compareW = elSize.width;
+      const compareH = elSize.height;
+      let btn;
+      let codes;
+      let supported;
+      let emoji;
+      unsupportedEmojiNames = [];
+      for (let i=0; i<emojiBtns.length; ++i) {
+        btn = emojiBtns[i];
+        if (checkUnsupported && btn.dataset.unsupported !== 'true') continue;
+        el.textContent = btn.textContent;
         elSize = el.getBoundingClientRect();
         supported = (elSize.width === compareW && elSize.height === compareH);
-        if (supported) btn.textContent = emoji;
-        else btn.dataset.unsupported = 'true';
+        if (!supported) {
+          codes = btn.dataset.code.split(',').map(x => parseInt('0x'+x));
+          emoji = String.fromCodePoint(...codes);
+          el.textContent = emoji;
+          elSize = el.getBoundingClientRect();
+          supported = (elSize.width === compareW && elSize.height === compareH);
+          if (supported) {
+            btn.textContent = emoji;
+          } else {
+            btn.dataset.unsupported = 'true';
+            unsupportedEmojiNames.push(btn.title);
+          }
+        }
       }
-    }
-    el.remove();
-  }, 10);
+      el.remove();
+      localStorage.unsupported_emoji_names = JSON.stringify(unsupportedEmojiNames);
+      localStorage.last_emoji_support_check = Date.now();
+    }, 10);
+  }
   
 });
