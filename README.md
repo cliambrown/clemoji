@@ -14,6 +14,8 @@ Made by [C. Liam Brown](https://cliambrown.com/)
 
 - Fast & pretty lightweight (not an Electron app)
 - Search and copy emojis, including any available variant (skin tones, hair colour, etc)
+- Pin your favourite emojis to the start of the list
+- Quick access to some of your recently-used emojis
 - Customizable
 - Dark / Light themes
 
