@@ -30,7 +30,7 @@ All settings are stored locally. This app does not connect to the internet and d
 ## Installation
 
 **Linux (Debian/Ubuntu):** Download and install the latest .deb file from [the Releases page](https://github.com/cliambrown/clemoji/releases).
-- The .deb was built on Linux Mint 22.2 with Linux kernel 6.14 -- other setups may require custom-build installers
+- The .deb was built on Linux Mint 22.2 with Linux kernel 6.14 -- other environments may require custom-built installers
 - I recommend a custom keybinding to launch the app (like `Win` + `.` on Windows)
 
 **Windows, MacOS, iOS, Android, other Linux distributions:** Clone the repo and follow the instructions at https://v2.tauri.app/distribute/#distributing to build an installer for your device.
