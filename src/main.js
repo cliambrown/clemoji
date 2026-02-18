@@ -1,6 +1,7 @@
 import copy from '/node_modules/copy-text-to-clipboard/index.js';
 import Database from '@tauri-apps/plugin-sql';
 import { exit } from '@tauri-apps/plugin-process';
+import { getCurrentWindow, LogicalSize } from '@tauri-apps/api/window';
 
 /**
  * Variables
@@ -37,6 +38,13 @@ const dialog = document.getElementById('dialog');
 const dialogBackdrop = document.getElementById('dialog-backdrop');
 const dialogPanel = document.getElementById('dialog-panel');
 
+const minWindowWidthOrHeight = 300;
+const defaultWindowWidth = 600;
+const defaultWindowHeight = 700;
+const windowSize = { width: null, height: null };
+const windowWidthEl = document.getElementById('current-window-width');
+const windowHeightEl = document.getElementById('current-window-height');
+
 const settings = {
   theme: 'system',
   emoji_size: 'medium',
@@ -48,6 +56,8 @@ const settings = {
   st2: 'false',
   hair: 'false',
   dir: 'false',
+  window_width: null,
+  window_height: null,
 };
 
 /**
@@ -57,7 +67,11 @@ const settings = {
 function parseIntSafe(val, minVal = 0) {
   if (!val) return 0;
   val = parseInt(val);
-  if (isNaN(val) || (minVal !== null && val < minVal)) return minVal;
+  if (minVal !== null) {
+    if (isNaN(val) || val < minVal) return minVal;
+  } else if (isNaN(val)) {
+    return 0;
+  }
   return val;
 }
 
@@ -98,6 +112,7 @@ async function storeState() {
 
 async function close() {
   await storeState();
+  windowSizeUnlisten();
   exit(0);
 }
 
@@ -454,7 +469,11 @@ window.setSetting = function (settingName, value, onLoad = false) {
   
   // Parse certain values
   if (settingName === 'max_used_emojis') {
-    value = parseIntSafe(value);
+    value = parseIntSafe(value, 0);
+  } else if (settingName === 'window_width' || settingName === 'window_height') {
+    value = parseIntSafe(value, 0);
+    if (value < 1) value = null
+    else if (value < minWindowWidthOrHeight) value = minWindowWidthOrHeight;
   } else if (settingName === 'remember_used_emojis' || settingName === 'show_unsupported_emojis' || settingName === 'close_on_copy') {
     value = parseBooleanSafe(value);
   }
@@ -528,6 +547,10 @@ window.setSetting = function (settingName, value, onLoad = false) {
       document.body.classList.remove('dir-false');
       document.body.classList.add('dir-right');
     }
+  } else if (settingName === 'window_width') {
+    localStorage.window_width = value;
+  } else if (settingName === 'window_height') {
+    localStorage.window_height = value;
   }
   
   // Update inputs if needed
@@ -539,6 +562,10 @@ window.setSetting = function (settingName, value, onLoad = false) {
     value = (value ? 'true' : 'false');
   } else if (settingName === 'max_used_emojis') {
     document.getElementById('input-max_used_emojis').value = value;
+  } else if (onLoad && settingName === 'window_width') {
+    document.getElementById('input-window_width').value = value;
+  } else if (onLoad && settingName === 'window_height') {
+    document.getElementById('input-window_height').value = value;
   }
   
   // Save to db
@@ -552,9 +579,85 @@ async function saveSettingToDb(settingName, value) {
   }
 }
 
+function recordWindowSize(windowSizeNow) {
+  windowWidthEl.innerText = windowSizeNow.width;
+  windowHeightEl.innerText = windowSizeNow.height;
+  windowSize.width = windowSizeNow.width;
+  windowSize.height = windowSizeNow.height;
+}
+
+window.chooseWindowSizePreset = function (presetName) {
+  if (presetName === 'default') {
+    setSetting('window_width', defaultWindowWidth, true);
+    setSetting('window_height', defaultWindowHeight, true);
+  } else if (presetName === 'current') {
+    setSetting('window_width', windowSize.width, true);
+    setSetting('window_height', windowSize.height, true);
+  } else if (presetName === 'auto') {
+    setSetting('window_width', null, true);
+    setSetting('window_height', null, true);
+  }
+}
+
+window.setWindowSizeToAuto = function () {
+  setSetting('window_width', null, true);
+  setSetting('window_height', null, true);
+}
+
 /**
  * Initialize
  */
+
+async function prepareWindow() {
+  
+  recordWindowSize(await getCurrentWindow().innerSize());
+  const windowSizeUnlisten = await getCurrentWindow().onResized(({ payload: windowSizeNow }) => {
+    recordWindowSize(windowSizeNow);
+  });
+  
+  let setToWidth = defaultWindowWidth;
+  if (windowSize.width && windowSize.width >= minWindowWidthOrHeight) setToWidth = windowSize.width;
+  if ('window_width' in localStorage) {
+    setToWidth = parseIntSafe(localStorage.window_width, 0);
+    if (setToWidth == 0) setToWidth = null;
+    else if (setToWidth < minWindowWidthOrHeight) setToWidth = minWindowWidthOrHeight;
+    setSetting('window_width', setToWidth, true);
+  }
+  
+  let setToHeight = defaultWindowHeight;
+  if (windowSize.height && windowSize.height >= minWindowWidthOrHeight) setToHeight = windowSize.height;
+  if ('window_height' in localStorage) {
+    setToHeight = parseIntSafe(localStorage.window_height, 0);
+    if (setToHeight == 0) setToHeight = null;
+    else if (setToHeight < minWindowWidthOrHeight) setToHeight = minWindowWidthOrHeight;
+    setSetting('window_height', setToHeight, true);
+  }
+  
+  if (settings.window_height || settings.window_width) {
+    let widthCorrection = parseIntSafe(localStorage.width_correction, null);
+    let heightCorrection = parseIntSafe(localStorage.height_correction, null);
+    await getCurrentWindow().setSize(new LogicalSize(setToWidth + widthCorrection, setToHeight + heightCorrection));
+    // Fix this not working on Wayland for some reason
+    const newInnerSize = await getCurrentWindow().innerSize();
+    let doFix = false;
+    if (newInnerSize.width !== setToWidth) {
+      widthCorrection = (setToWidth + widthCorrection) - newInnerSize.width;
+      localStorage.width_correction = widthCorrection;
+      doFix = true;
+    }
+    if (newInnerSize.height !== setToHeight) {
+      heightCorrection = (setToHeight + heightCorrection) - newInnerSize.height;
+      localStorage.height_correction = heightCorrection;
+      doFix = true;
+    }
+    if (doFix) {
+      await getCurrentWindow().setSize(new LogicalSize(setToWidth + widthCorrection, setToHeight + heightCorrection));
+    }
+  }
+  
+}
+
+prepareWindow();
 
 if ('emoji_size' in localStorage) setSetting('emoji_size', localStorage.emoji_size, true);
 if ('max_used_emojis' in localStorage) setSetting('max_used_emojis', localStorage.max_used_emojis, true);

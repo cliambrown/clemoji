@@ -22,16 +22,16 @@
 <body class="dark:bg-black hide-unsupported st1-false st2-false hair-false dir-false dialog-emoji show-used-emoji-1 show-used-emoji-2 show-used-emoji-3 show-used-emoji-4 show-used-emoji-5 show-used-emoji-6 show-used-emoji-7 show-used-emoji-8 show-used-emoji-9 show-used-emoji-10">
     <main>
         
-        <div class="fixed top-0 left-0 right-0 z-10 px-4 py-2 bg-gray-100 dark:bg-gray-900">
+        <div class="top-0 right-0 left-0 z-10 fixed bg-gray-100 dark:bg-gray-900 px-4 py-2">
             <div class="relative">
-                <input type="text" id="filter-input" oninput="filterEmojis(event)" placeholder="Search" class="block w-full rounded-md bg-white dark:bg-gray-800 px-3 py-1.5 text-base text-black dark:text-gray-100 outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-0 focus-visible:-outline-offset-2 focus-visible:outline-indigo-500 sm:text-sm/6" />
-                <button type="button" onclick="clearFilterInput()" class="absolute top-0 right-0 flex items-center justify-center text-gray-700 rounded-md cursor-pointer size-10 dark:text-gray-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x size-5"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                <input type="text" id="filter-input" oninput="filterEmojis(event)" placeholder="Search" class="block bg-white dark:bg-gray-800 px-3 py-1.5 rounded-md outline-1 outline-white/10 focus-visible:outline-indigo-500 focus:outline-0 -outline-offset-1 focus-visible:-outline-offset-2 w-full text-black dark:text-gray-100 placeholder:text-gray-500 sm:text-sm/6 text-base" />
+                <button type="button" onclick="clearFilterInput()" class="top-0 right-0 absolute flex justify-center items-center rounded-md size-10 text-gray-700 dark:text-gray-300 cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-5 lucide lucide-x-icon lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
                 </button>
             </div>
         </div>
         
-        <div id="filtered-emojis" class="flex flex-wrap items-start justify-center gap-2 p-2 mt-13.5 mb-48">
+        <div id="filtered-emojis" class="flex flex-wrap justify-center items-start gap-2 mt-13.5 mb-48 p-2">
             
             <button type="button" class="emoji-btn" title="grinning face" data-base-name="grinning face" data-category="Smileys &amp; Emotion" data-subcategory="face-smiling" data-code="1F600" data-searchable-text="grinning face smileys &amp; emotion face-smiling" onclick="handleEmojiBtnClick(event, event.target)">😀</button>
             <button type="button" class="emoji-btn" title="grinning face with big eyes" data-base-name="grinning face with big eyes" data-category="Smileys &amp; Emotion" data-subcategory="face-smiling" data-code="1F603" data-searchable-text="grinning face with big eyes smileys &amp; emotion face-smiling" onclick="handleEmojiBtnClick(event, event.target)">😃</button>
@@ -3989,86 +3989,86 @@
             
         </div>
         
-        <div class="fixed bottom-0 left-0 right-0 z-10 flex items-center px-4 py-2 bg-gray-100 dark:bg-gray-900">
+        <div class="right-0 bottom-0 left-0 z-10 fixed flex items-center bg-gray-100 dark:bg-gray-900 px-4 py-2">
             
-            <div class="flex items-center justify-center text-gray-400 shrink-0 size-10">
+            <div class="flex justify-center items-center size-10 text-gray-400 shrink-0">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-icon lucide-clipboard"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>
             </div>
             
-            <button id="selected-emoji-model-btn" type="button" class="relative flex items-center justify-center hidden h-10 p-1 text-3xl rounded-md cursor-pointer focus:outline-none min-w-10"></button>
+            <button id="selected-emoji-model-btn" type="button" class="hidden relative flex justify-center items-center p-1 rounded-md focus:outline-none min-w-10 h-10 text-3xl cursor-pointer"></button>
             
             <div id="selected-emojis" class="flex flex-wrap items-center gap-1 grow"></div>
             
-            <button type="button" class="flex items-center justify-center p-1 ml-8 text-blue-800 rounded-md cursor-pointer shrink-0 size-10 dark:text-blue-100 focus:outline-none" onclick="showDialog('help')" title="Show Help Dialog">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-question-mark-icon lucide-circle-question-mark size-5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+            <button type="button" class="flex justify-center items-center ml-8 p-1 rounded-md focus:outline-none size-10 text-blue-800 dark:text-blue-100 cursor-pointer shrink-0" onclick="showDialog('help')" title="Show Help Dialog">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-5 lucide lucide-circle-question-mark-icon lucide-circle-question-mark"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
             </button>
             
-            <button type="button" class="flex items-center justify-center p-1 ml-2 text-blue-800 rounded-md cursor-pointer shrink-0 size-10 dark:text-blue-100 focus:outline-none" onclick="showDialog('settings')" title="Show Settings Dialog">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-icon lucide-settings size-5"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/></svg>
+            <button type="button" class="flex justify-center items-center ml-2 p-1 rounded-md focus:outline-none size-10 text-blue-800 dark:text-blue-100 cursor-pointer shrink-0" onclick="showDialog('settings')" title="Show Settings Dialog">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-5 lucide lucide-icon lucide-settings"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/></svg>
             </button>
             
         </div>
         
-        <dialog id="dialog" aria-labelledby="dialog-title" class="fixed inset-0 z-20 overflow-y-auto bg-transparent size-auto max-h-none max-w-none">
-            <div data-closed id="dialog-backdrop" class="fixed inset-0 transition-opacity duration-150 bg-gray-800/75 data-closed:opacity-0" onclick="closeDialog()"></div>
-            <div tabindex="0" class="flex items-center justify-center h-full max-h-screen min-h-full p-4 text-center focus:outline-none sm:p-0">
-                <div data-closed id="dialog-panel" class="relative w-full h-auto max-h-screen text-left transition-all duration-150 transform bg-gray-100 rounded-lg shadow-xl dark:bg-black dark:text-gray-50 data-closed:translate-y-4 data-closed:opacity-0 sm:my-8 sm:max-w-lg data-closed:sm:translate-y-0 data-closed:sm:scale-95">
-                    <div class="flex flex-col max-h-[calc(100vh-(--spacing(6)))] pt-4 sm:pt-4">
+        <dialog id="dialog" aria-labelledby="dialog-title" class="z-20 fixed inset-0 bg-transparent max-w-none max-h-none size-auto overflow-y-auto">
+            <div data-closed id="dialog-backdrop" class="fixed inset-0 bg-gray-800/75 data-closed:opacity-0 transition-opacity duration-150" onclick="closeDialog()"></div>
+            <div tabindex="0" class="flex justify-center items-center p-4 sm:p-0 focus:outline-none h-full min-h-full max-h-screen text-center">
+                <div data-closed id="dialog-panel" class="relative bg-gray-100 dark:bg-black data-closed:opacity-0 shadow-xl sm:my-8 rounded-lg w-full sm:max-w-lg h-auto max-h-screen dark:text-gray-50 text-left data-closed:sm:scale-95 transition-all data-closed:sm:translate-y-0 data-closed:translate-y-4 duration-150 transform">
+                    <div class="flex flex-col pt-4 sm:pt-4 max-h-[calc(100vh-(--spacing(6)))]">
                         
-                        <div class="flex justify-between px-4 gap-x-8 sm:px-6 shrink-0">
+                        <div class="flex justify-between gap-x-8 px-4 sm:px-6 shrink-0">
                             
-                            <h2 id="dialog-title" class="text-2xl font-medium text-gray-600 grow dark:text-gray-300">
-                                <span id="dialog-emoji-title" class="dialog-emoji-content text-xl">Emoji</span>
+                            <h2 id="dialog-title" class="font-medium text-gray-600 dark:text-gray-300 text-2xl grow">
+                                <span id="dialog-emoji-title" class="text-xl dialog-emoji-content">Emoji</span>
                                 <span class="dialog-help-content">Help</span>
                                 <span class="dialog-settings-content">Settings</span>
                             </h2>
                             
-                            <button type="button" onclick="closeDialog()" class="relative flex items-center justify-center rounded-md cursor-pointer size-10 shrink-0 -top-1 -right-1">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x size-5"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                            <button type="button" onclick="closeDialog()" class="-top-1 -right-1 relative flex justify-center items-center rounded-md size-10 cursor-pointer shrink-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-5 lucide lucide-x-icon lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
                             </button>
                             
                         </div>
                         
-                        <div class="px-4 pt-4 pb-10 overflow-y-auto sm:pb-8 sm:px-6" style="min-height:1px;">
+                        <div class="px-4 sm:px-6 pt-4 pb-10 sm:pb-8 overflow-y-auto" style="min-height:1px;">
                             
                             <div class="dialog-emoji-content">
                                 
-                                <div class="-mt-3 text-sm font-semibold">
-                                    <button type="button" id="dialog-emoji-category" onclick="applyFilter(event.target.textContent)" class="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100 cursor-pointer hover:underline"></button>
+                                <div class="-mt-3 font-semibold text-sm">
+                                    <button type="button" id="dialog-emoji-category" onclick="applyFilter(event.target.textContent)" class="text-gray-600 hover:text-gray-800 dark:hover:text-gray-100 dark:text-gray-300 hover:underline cursor-pointer"></button>
                                     <span class="text-gray-500 dark:text-gray-400">/</span>
-                                    <button type="button" id="dialog-emoji-subcategory" onclick="applyFilter(event.target.textContent)" class="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100 cursor-pointer hover:underline"></button>
+                                    <button type="button" id="dialog-emoji-subcategory" onclick="applyFilter(event.target.textContent)" class="text-gray-600 hover:text-gray-800 dark:hover:text-gray-100 dark:text-gray-300 hover:underline cursor-pointer"></button>
                                     <span class="text-gray-500 dark:text-gray-400">/</span>
-                                    <button type="button" id="add-extra-searchable-text-btn" class="cursor-pointer text-blue-300 hover:text-blue-600 transition-colors dark:text-blue-600 dark:hover:text-blue-400" onclick="toggleExtraSearchableTextInput()" title="Show custom searchable text input">[add searchable text]</button>
-                                    <button type="button" id="dialog-emoji-extra-searchable-text" onclick="toggleExtraSearchableTextInput()" class="cursor-pointer hover:underline text-blue-600 hover:text-blue-800 dark:text-blue-200 dark:hover:text-blue-100" title="Show custom searchable text input"></button>
+                                    <button type="button" id="add-extra-searchable-text-btn" class="text-blue-300 hover:text-blue-600 dark:hover:text-blue-400 dark:text-blue-600 transition-colors cursor-pointer" onclick="toggleExtraSearchableTextInput()" title="Show custom searchable text input">[add searchable text]</button>
+                                    <button type="button" id="dialog-emoji-extra-searchable-text" onclick="toggleExtraSearchableTextInput()" class="text-blue-600 hover:text-blue-800 dark:hover:text-blue-100 dark:text-blue-200 hover:underline cursor-pointer" title="Show custom searchable text input"></button>
                                 </div>
                                 
-                                <div id="container-input-extra-searchable-text" class="mt-2 flex gap-2 items-center hidden">
+                                <div id="container-input-extra-searchable-text" class="hidden flex items-center gap-2 mt-2">
                                     <div class="grow">
-                                        <input type="text" id="input-extra-searchable-text" oninput="updateExtraSearchableText()" onkeydown="if (event.keyCode == 13) { event.stopPropagation(); toggleExtraSearchableTextInput(); }" placeholder="Custom search text" class="block w-full rounded-md bg-white dark:bg-gray-800 px-3 py-1.5 text-base text-black dark:text-gray-100 outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-0 focus-visible:-outline-offset-2 focus-visible:outline-indigo-500 sm:text-sm/6" />
+                                        <input type="text" id="input-extra-searchable-text" oninput="updateExtraSearchableText()" onkeydown="if (event.keyCode == 13) { event.stopPropagation(); toggleExtraSearchableTextInput(); }" placeholder="Custom search text" class="block bg-white dark:bg-gray-800 px-3 py-1.5 rounded-md outline-1 outline-white/10 focus-visible:outline-indigo-500 focus:outline-0 -outline-offset-1 focus-visible:-outline-offset-2 w-full text-black dark:text-gray-100 placeholder:text-gray-500 sm:text-sm/6 text-base" />
                                     </div>
                                     <div class="shrink-0">
-                                        <button type="button" onclick="toggleExtraSearchableTextInput()" class="cursor-pointer text-gray-700 dark:text-gray-300 flex items-center justify-center size-10">
+                                        <button type="button" onclick="toggleExtraSearchableTextInput()" class="flex justify-center items-center size-10 text-gray-700 dark:text-gray-300 cursor-pointer">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-icon lucide-check"><path d="M20 6 9 17l-5-5"/></svg>
                                         </button>
                                     </div>
                                 </div>
                                 
-                                <div id="dialog-emojis" class="flex flex-wrap items-start justify-center gap-2 mt-5"></div>
+                                <div id="dialog-emojis" class="flex flex-wrap justify-center items-start gap-2 mt-5"></div>
                                 
                             </div>
                             
                             <div class="dialog-help-content">
                                 
                                 <table class="w-full whitespace-nowrap">
-                                    <tbody class="[&>*:not(:last-child)]:border-b *:border-gray-700">
+                                    <tbody class="*:border-gray-700 [&>*:not(:last-child)]:border-b">
                                         <tr>
                                             <td class="px-1 py-2 pr-2">
                                                 Copy emoji
                                             </td>
                                             <td class="px-1 py-2 text-right">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mouse-icon lucide-mouse inline size-6 text-gray-700 dark:text-gray-200 relative bottom-0.5 -mr-1"><rect x="5" y="2" width="14" height="20" rx="7"/><path d="M12 6v4"/></svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline bottom-0.5 relative -mr-1 size-6 text-gray-700 dark:text-gray-200 lucide lucide-mouse-icon lucide-mouse"><rect x="5" y="2" width="14" height="20" rx="7"/><path d="M12 6v4"/></svg>
                                                 = Click or
-                                                <span class="inline-block h-6 px-2 bg-gray-700 text-white dark:bg-gray-200 dark:text-black rounded">
+                                                <span class="inline-block bg-gray-700 dark:bg-gray-200 px-2 rounded h-6 text-white dark:text-black">
                                                     Enter
                                                 </span>
                                             </td>
@@ -4078,11 +4078,11 @@
                                                 Copy multiple emoji
                                             </td>
                                             <td class="px-1 py-2 text-right">
-                                                <span class="inline-block h-6 px-2 bg-gray-700 text-white dark:bg-gray-200 dark:text-black rounded">
+                                                <span class="inline-block bg-gray-700 dark:bg-gray-200 px-2 rounded h-6 text-white dark:text-black">
                                                     Shift
                                                 </span>
                                                 +
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mouse-icon lucide-mouse inline size-6 text-gray-700 dark:text-gray-200 relative bottom-0.5 -ml-1"><rect x="5" y="2" width="14" height="20" rx="7"/><path d="M12 6v4"/></svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline bottom-0.5 relative -ml-1 size-6 text-gray-700 dark:text-gray-200 lucide lucide-mouse-icon lucide-mouse"><rect x="5" y="2" width="14" height="20" rx="7"/><path d="M12 6v4"/></svg>
                                             </td>
                                         </tr>
                                         <tr>
@@ -4090,11 +4090,11 @@
                                                 Open emoji info
                                             </td>
                                             <td class="px-1 py-2 text-right">
-                                                <span class="inline-block h-6 px-2 bg-gray-700 text-white dark:bg-gray-200 dark:text-black rounded">
+                                                <span class="inline-block bg-gray-700 dark:bg-gray-200 px-2 rounded h-6 text-white dark:text-black">
                                                     Alt
                                                 </span>
                                                 +
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mouse-icon lucide-mouse inline size-6 text-gray-700 dark:text-gray-200 relative bottom-0.5 -ml-1"><rect x="5" y="2" width="14" height="20" rx="7"/><path d="M12 6v4"/></svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline bottom-0.5 relative -ml-1 size-6 text-gray-700 dark:text-gray-200 lucide lucide-mouse-icon lucide-mouse"><rect x="5" y="2" width="14" height="20" rx="7"/><path d="M12 6v4"/></svg>
                                             </td>
                                         </tr>
                                         <tr>
@@ -4102,11 +4102,11 @@
                                                 Pin / Unpin emoji
                                             </td>
                                             <td class="px-1 py-2 text-right">
-                                                <span class="inline-block h-6 px-2 bg-gray-700 text-white dark:bg-gray-200 dark:text-black rounded">
+                                                <span class="inline-block bg-gray-700 dark:bg-gray-200 px-2 rounded h-6 text-white dark:text-black">
                                                     Ctrl
                                                 </span>
                                                 +
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mouse-icon lucide-mouse inline size-6 text-gray-700 dark:text-gray-200 relative bottom-0.5 -ml-1"><rect x="5" y="2" width="14" height="20" rx="7"/><path d="M12 6v4"/></svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline bottom-0.5 relative -ml-1 size-6 text-gray-700 dark:text-gray-200 lucide lucide-mouse-icon lucide-mouse"><rect x="5" y="2" width="14" height="20" rx="7"/><path d="M12 6v4"/></svg>
                                             </td>
                                         </tr>
                                         <tr>
@@ -4114,15 +4114,15 @@
                                                 Remove from history
                                             </td>
                                             <td class="px-1 py-2 text-right">
-                                                <span class="inline-block h-6 px-2 bg-gray-700 text-white dark:bg-gray-200 dark:text-black rounded">
+                                                <span class="inline-block bg-gray-700 dark:bg-gray-200 px-2 rounded h-6 text-white dark:text-black">
                                                     Ctrl
                                                 </span>
                                                 +
-                                                <span class="inline-block h-6 px-2 bg-gray-700 text-white dark:bg-gray-200 dark:text-black rounded">
+                                                <span class="inline-block bg-gray-700 dark:bg-gray-200 px-2 rounded h-6 text-white dark:text-black">
                                                     Shift
                                                 </span>
                                                 +
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mouse-icon lucide-mouse inline size-6 text-gray-700 dark:text-gray-200 relative bottom-0.5 -ml-1"><rect x="5" y="2" width="14" height="20" rx="7"/><path d="M12 6v4"/></svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline bottom-0.5 relative -ml-1 size-6 text-gray-700 dark:text-gray-200 lucide lucide-mouse-icon lucide-mouse"><rect x="5" y="2" width="14" height="20" rx="7"/><path d="M12 6v4"/></svg>
                                             </td>
                                         </tr>
                                         <tr>
@@ -4130,7 +4130,7 @@
                                                 Next emoji
                                             </td>
                                             <td class="px-1 py-2 text-right">
-                                                <span class="inline-block h-6 px-2 bg-gray-700 text-white dark:bg-gray-200 dark:text-black rounded">
+                                                <span class="inline-block bg-gray-700 dark:bg-gray-200 px-2 rounded h-6 text-white dark:text-black">
                                                     Tab
                                                 </span>
                                             </td>
@@ -4140,11 +4140,11 @@
                                                 Previous emoji
                                             </td>
                                             <td class="px-1 py-2 text-right">
-                                                <span class="inline-block h-6 px-2 bg-gray-700 text-white dark:bg-gray-200 dark:text-black rounded">
+                                                <span class="inline-block bg-gray-700 dark:bg-gray-200 px-2 rounded h-6 text-white dark:text-black">
                                                     Shift
                                                 </span>
                                                 +
-                                                <span class="inline-block h-6 px-2 bg-gray-700 text-white dark:bg-gray-200 dark:text-black rounded">
+                                                <span class="inline-block bg-gray-700 dark:bg-gray-200 px-2 rounded h-6 text-white dark:text-black">
                                                     Tab
                                                 </span>
                                             </td>
@@ -4154,7 +4154,7 @@
                                                 Clear filter / Close dialog
                                             </td>
                                             <td class="px-1 py-2 text-right">
-                                                <span class="inline-block h-6 px-2 bg-gray-700 text-white dark:bg-gray-200 dark:text-black rounded">
+                                                <span class="inline-block bg-gray-700 dark:bg-gray-200 px-2 rounded h-6 text-white dark:text-black">
                                                     Esc
                                                 </span>
                                             </td>
@@ -4164,11 +4164,11 @@
                                                 Close app
                                             </td>
                                             <td class="px-1 py-2 text-right">
-                                                <span class="inline-block h-6 px-2 bg-gray-700 text-white dark:bg-gray-200 dark:text-black rounded">
+                                                <span class="inline-block bg-gray-700 dark:bg-gray-200 px-2 rounded h-6 text-white dark:text-black">
                                                     Ctrl
                                                 </span>
                                                 +
-                                                <span class="inline-flex items-center justify-center bg-gray-700 text-white dark:bg-gray-200 dark:text-black rounded size-6">
+                                                <span class="inline-flex justify-center items-center bg-gray-700 dark:bg-gray-200 rounded size-6 text-white dark:text-black">
                                                     W
                                                 </span>
                                             </td>
@@ -4176,15 +4176,15 @@
                                     </tbody>
                                 </table>
                                 
-                                <h3 class="text-lg text-gray-600 dark:text-gray-300 mt-8">About</h3>
+                                <h3 class="mt-8 text-gray-600 dark:text-gray-300 text-lg">About</h3>
                                 
                                 <div class="mt-3">
                                     <p class="mt-3 text-sm">
-                                        App version: 0.1.4
+                                        App version: 0.1.5
                                     </p>
 
                                     <p class="mt-3 text-sm">
-                                        Source code: <a href="https://github.com/cliambrown/clemoji" target="_blank" class="text-blue-600 underline dark:text-blue-300">github.com/cliambrown/clemoji</a>
+                                        Source code: <a href="https://github.com/cliambrown/clemoji" target="_blank" class="text-blue-600 dark:text-blue-300 underline">github.com/cliambrown/clemoji</a>
                                     </p>
                                 </div>
                                 
@@ -4195,8 +4195,8 @@
                                 <div class="flex flex-wrap items-start gap-x-6 gap-y-4 sm:gap-x-8 sm:gap-y-6">
                                      
                                     <div>
-                                        <label for="theme" class="block text-sm font-semibold text-gray-700 dark:text-gray-200">Theme</label>
-                                        <select id="select-theme" onchange="setSetting('theme', event.target.value)" class="mt-1 rounded-md bg-white dark:bg-gray-800 pl-3 py-1.5 text-base text-black dark:text-gray-100 outline-1 -outline-offset-1 outline-white/10 focus:outline-0 focus-visible:-outline-offset-2 focus-visible:outline-indigo-500 sm:text-sm/6">
+                                        <label for="theme" class="block font-semibold text-gray-700 dark:text-gray-200 text-sm">Theme</label>
+                                        <select id="select-theme" onchange="setSetting('theme', event.target.value)" class="bg-white dark:bg-gray-800 mt-1 py-1.5 pl-3 rounded-md outline-1 outline-white/10 focus-visible:outline-indigo-500 focus:outline-0 -outline-offset-1 focus-visible:-outline-offset-2 text-black dark:text-gray-100 sm:text-sm/6 text-base">
                                             <option value="system">System</option>
                                             <option value="light">Light</option>
                                             <option value="dark">Dark</option>
@@ -4204,8 +4204,8 @@
                                     </div>
                                     
                                     <div>
-                                        <label for="emoji-size" class="block text-sm font-semibold text-gray-700 dark:text-gray-200">Emoji Size</label>
-                                        <select id="select-emoji_size" onchange="setSetting('emoji_size', event.target.value)" class="mt-1 rounded-md bg-white dark:bg-gray-800 pl-3 py-1.5 text-base text-black dark:text-gray-100 outline-1 -outline-offset-1 outline-white/10 focus:outline-0 focus-visible:-outline-offset-2 focus-visible:outline-indigo-500 sm:text-sm/6">
+                                        <label for="emoji-size" class="block font-semibold text-gray-700 dark:text-gray-200 text-sm">Emoji Size</label>
+                                        <select id="select-emoji_size" onchange="setSetting('emoji_size', event.target.value)" class="bg-white dark:bg-gray-800 mt-1 py-1.5 pl-3 rounded-md outline-1 outline-white/10 focus-visible:outline-indigo-500 focus:outline-0 -outline-offset-1 focus-visible:-outline-offset-2 text-black dark:text-gray-100 sm:text-sm/6 text-base">
                                             <option value="small">Small</option>
                                             <option value="medium">Medium</option>
                                             <option value="large">Large</option>
@@ -4213,8 +4213,8 @@
                                     </div>
                                     
                                     <div>
-                                        <label for="input-max_used_emojis" class="block text-sm font-semibold text-gray-700 dark:text-gray-200">Max History</label>
-                                        <input type="number" id="input-max_used_emojis" min="0" max="50" value="10" oninput="setSetting('max_used_emojis', event.target.value)" class="mt-1 w-24 rounded-md bg-white dark:bg-gray-800 px-3 py-1.5 text-base text-black dark:text-gray-100 outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-0 focus-visible:-outline-offset-2 focus-visible:outline-indigo-500 sm:text-sm/6" />
+                                        <label for="input-max_used_emojis" class="block font-semibold text-gray-700 dark:text-gray-200 text-sm">Max History</label>
+                                        <input type="number" id="input-max_used_emojis" min="0" max="50" value="10" oninput="setSetting('max_used_emojis', event.target.value)" class="bg-white dark:bg-gray-800 mt-1 px-3 py-1.5 rounded-md outline-1 outline-white/10 focus-visible:outline-indigo-500 focus:outline-0 -outline-offset-1 focus-visible:-outline-offset-2 w-24 text-black dark:text-gray-100 placeholder:text-gray-500 sm:text-sm/6 text-base" />
                                     </div>
                                     
                                 </div>
@@ -4249,22 +4249,44 @@
                                     </div>
                                     
                                     <div>
-                                        <button type="button" id="btn-clear-emoji-history" onclick="clearEmojiHistory()" class="flex items-center justify-center h-10 gap-2 px-4 text-sm font-semibold bg-gray-200 rounded-md cursor-pointer dark:text-gray-100 dark:bg-gray-700 shrink-0 whitespace-nowrap disabled:opacity-40 disabled:cursor-default">
-                                            <svg id="svg-clear-history-clock" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock-icon lucide-clock size-4"><path d="M12 6v6l4 2"/><circle cx="12" cy="12" r="10"/></svg>
-                                            <svg id="svg-clear-history-check" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-check-big-icon lucide-circle-check-big size-4 hidden"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg>
+                                        <button type="button" id="btn-clear-emoji-history" onclick="clearEmojiHistory()" class="flex justify-center items-center gap-2 bg-gray-200 dark:bg-gray-700 disabled:opacity-40 px-4 rounded-md h-10 font-semibold dark:text-gray-100 text-sm whitespace-nowrap cursor-pointer disabled:cursor-default shrink-0">
+                                            <svg id="svg-clear-history-clock" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4 lucide lucide-clock-icon lucide-clock"><path d="M12 6v6l4 2"/><circle cx="12" cy="12" r="10"/></svg>
+                                            <svg id="svg-clear-history-check" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden size-4 lucide lucide-circle-check-big-icon lucide-circle-check-big"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg>
                                             Clear History
                                         </button>
                                     </div>
                                     
                                 </div>
                                 
-                                <h3 class="text-lg text-gray-600 dark:text-gray-300 mt-8">Default emoji (where applicable)</h3>
+                                <div class="mt-4">
+                                    <label for="input-window_width" class="block font-semibold text-gray-700 dark:text-gray-200 text-sm">Preferred Window Size (px)</label>
+                                    <div class="flex flex-wrap items-center gap-x-4 text-sm">
+                                        <button type="button" class="py-1 text-sm hover:underline cursor-pointer" onclick="chooseWindowSizePreset('default')">
+                                            default 600 x 700
+                                        </button>
+                                        <button type="button" class="py-1 text-sm hover:underline cursor-pointer" onclick="chooseWindowSizePreset('current')">
+                                            currently <span id="current-window-width">?</span> x <span id="current-window-height">?</span>
+                                        </button>
+                                        <button type="button" class="py-1 text-sm hover:underline cursor-pointer" onclick="chooseWindowSizePreset('auto')">
+                                            empty = auto
+                                        </button>
+                                    </div>
+                                    <div class="flex items-center gap-2 mt-1">
+                                        <label for="input-window_width" class="sr-only">Window Width in pixels</label>
+                                        <input id="input-window_width" type="text" onchange="setSetting('window_width', event.target.value)" class="bg-white dark:bg-gray-800 px-3 py-1.5 rounded-md outline-1 outline-white/10 focus-visible:outline-indigo-500 focus:outline-0 -outline-offset-1 focus-visible:-outline-offset-2 w-24 text-black dark:text-gray-100 placeholder:text-gray-500 sm:text-sm/6 text-base" />
+                                        x
+                                        <label for="input-window_height" class="sr-only">Window Height in pixels</label>
+                                        <input id="input-window_height" type="text" onchange="setSetting('window_height', event.target.value)" class="bg-white dark:bg-gray-800 px-3 py-1.5 rounded-md outline-1 outline-white/10 focus-visible:outline-indigo-500 focus:outline-0 -outline-offset-1 focus-visible:-outline-offset-2 w-24 text-black dark:text-gray-100 placeholder:text-gray-500 sm:text-sm/6 text-base" />
+                                    </div>
+                                </div>
                                 
-                                <div class="flex flex-wrap items-start mt-4 gap-x-6 gap-y-4 sm:gap-x-8 sm:gap-y-6">
+                                <h3 class="mt-8 text-gray-600 dark:text-gray-300 text-lg">Default emoji (where applicable)</h3>
+                                
+                                <div class="flex flex-wrap items-start gap-x-6 gap-y-4 sm:gap-x-8 sm:gap-y-6 mt-4">
                                     
                                     <div>
-                                        <label for="st1" class="block text-sm font-semibold text-gray-700 dark:text-gray-200">Skin Tone 1</label>
-                                        <select id="select-st1" onchange="setSetting('st1', event.target.value)" class="mt-1 rounded-md bg-white dark:bg-gray-800 pl-3 py-1.5 text-base text-black dark:text-gray-100 outline-1 -outline-offset-1 outline-white/10 focus:outline-0 focus-visible:-outline-offset-2 focus-visible:outline-indigo-500 sm:text-sm/6">
+                                        <label for="st1" class="block font-semibold text-gray-700 dark:text-gray-200 text-sm">Skin Tone 1</label>
+                                        <select id="select-st1" onchange="setSetting('st1', event.target.value)" class="bg-white dark:bg-gray-800 mt-1 py-1.5 pl-3 rounded-md outline-1 outline-white/10 focus-visible:outline-indigo-500 focus:outline-0 -outline-offset-1 focus-visible:-outline-offset-2 text-black dark:text-gray-100 sm:text-sm/6 text-base">
                                             <option value="false">✋ Default</option>
                                             <option value="lst">✋🏻 Light</option>
                                             <option value="mlst">✋🏼 Medium-Light</option>
@@ -4275,8 +4297,8 @@
                                     </div>
                                     
                                     <div>
-                                        <label for="st2" class="block text-sm font-semibold text-gray-700 dark:text-gray-200">Skin Tone 1</label>
-                                        <select id="select-st2" onchange="setSetting('st2', event.target.value)" class="mt-1 rounded-md bg-white dark:bg-gray-800 pl-3 py-1.5 text-base text-black dark:text-gray-100 outline-1 -outline-offset-1 outline-white/10 focus:outline-0 focus-visible:-outline-offset-2 focus-visible:outline-indigo-500 sm:text-sm/6">
+                                        <label for="st2" class="block font-semibold text-gray-700 dark:text-gray-200 text-sm">Skin Tone 1</label>
+                                        <select id="select-st2" onchange="setSetting('st2', event.target.value)" class="bg-white dark:bg-gray-800 mt-1 py-1.5 pl-3 rounded-md outline-1 outline-white/10 focus-visible:outline-indigo-500 focus:outline-0 -outline-offset-1 focus-visible:-outline-offset-2 text-black dark:text-gray-100 sm:text-sm/6 text-base">
                                             <option value="false" id="st2-option-false">✋ Default</option>
                                             <option value="lst" id="st2-option-lst">✋🏻 Light</option>
                                             <option value="mlst" id="st2-option-mlst">✋🏼 Medium-Light</option>
@@ -4287,8 +4309,8 @@
                                     </div>
                                     
                                     <div>
-                                        <label for="hair" class="block text-sm font-semibold text-gray-700 dark:text-gray-200">Hair</label>
-                                        <select id="select-hair" onchange="setSetting('hair', event.target.value)" class="mt-1 rounded-md bg-white dark:bg-gray-800 pl-3 py-1.5 text-base text-black dark:text-gray-100 outline-1 -outline-offset-1 outline-white/10 focus:outline-0 focus-visible:-outline-offset-2 focus-visible:outline-indigo-500 sm:text-sm/6 disabled:opacity-30">
+                                        <label for="hair" class="block font-semibold text-gray-700 dark:text-gray-200 text-sm">Hair</label>
+                                        <select id="select-hair" onchange="setSetting('hair', event.target.value)" class="bg-white dark:bg-gray-800 disabled:opacity-30 mt-1 py-1.5 pl-3 rounded-md outline-1 outline-white/10 focus-visible:outline-indigo-500 focus:outline-0 -outline-offset-1 focus-visible:-outline-offset-2 text-black dark:text-gray-100 sm:text-sm/6 text-base">
                                             <option value="false">🧑 Default</option>
                                             <option value="blond">👱 Blond</option>
                                             <option value="beard">🧔 Beard</option>
@@ -4300,8 +4322,8 @@
                                     </div>
                                         
                                     <div>
-                                        <label for="dir" class="block text-sm font-semibold text-gray-700 dark:text-gray-200">Direction</label>
-                                        <select id="select-dir" onchange="setSetting('dir', event.target.value)" class="mt-1 rounded-md bg-white dark:bg-gray-800 pl-3 py-1.5 text-base text-black dark:text-gray-100 outline-1 -outline-offset-1 outline-white/10 focus:outline-0 focus-visible:-outline-offset-2 focus-visible:outline-indigo-500 sm:text-sm/6 disabled:opacity-30">
+                                        <label for="dir" class="block font-semibold text-gray-700 dark:text-gray-200 text-sm">Direction</label>
+                                        <select id="select-dir" onchange="setSetting('dir', event.target.value)" class="bg-white dark:bg-gray-800 disabled:opacity-30 mt-1 py-1.5 pl-3 rounded-md outline-1 outline-white/10 focus-visible:outline-indigo-500 focus:outline-0 -outline-offset-1 focus-visible:-outline-offset-2 text-black dark:text-gray-100 sm:text-sm/6 text-base">
                                         <option value="false">🚶 Default</option>
                                         <option value="right">🚶‍➡️ Right</option>
                                         </select>
