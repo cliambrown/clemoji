@@ -44,6 +44,7 @@ const defaultWindowHeight = 700;
 const windowSize = { width: null, height: null };
 const windowWidthEl = document.getElementById('current-window-width');
 const windowHeightEl = document.getElementById('current-window-height');
+let windowSizeUnlisten = null;
 
 const settings = {
   theme: 'system',
@@ -112,7 +113,7 @@ async function storeState() {
 
 async function close() {
   await storeState();
-  windowSizeUnlisten();
+  if (windowSizeUnlisten) windowSizeUnlisten();
   exit(0);
 }
 
@@ -611,7 +612,7 @@ window.setWindowSizeToAuto = function () {
 async function prepareWindow() {
   
   recordWindowSize(await getCurrentWindow().innerSize());
-  const windowSizeUnlisten = await getCurrentWindow().onResized(({ payload: windowSizeNow }) => {
+  windowSizeUnlisten = await getCurrentWindow().onResized(({ payload: windowSizeNow }) => {
     recordWindowSize(windowSizeNow);
   });
   
