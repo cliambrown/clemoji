@@ -8,6 +8,7 @@
     "opener:default",
     "sql:default",
     "sql:allow-execute",
-    "process:default"
+    "process:default",
+    "clipboard-manager:allow-write-text"
   ]
 }
